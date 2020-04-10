@@ -76,6 +76,15 @@ module.exports = {
         }
     },
     async delete(req, res) {
-
+        try {
+            const {status, data, error} = await BaseController.delete(User, req.params.id);
+            if (!status) {
+                return Response.error(res, 500, error);
+            } else {
+                return Response.success(res, 'Delete success');
+            }
+        } catch(error) {
+            return Response.error(res, 500, error);
+        }
     }
 };

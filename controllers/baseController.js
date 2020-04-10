@@ -146,7 +146,28 @@ module.exports = {
             }
         });
     },
-    async delete(req, res) {
-
+    delete(Model, _id) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const result = await Model.deleteOne({_id});
+                console.log(result);
+                if (result && result['ok'] && (result['deletedCount'] == 1)) {
+                    resolve({
+                        status: true,
+                        data: result
+                    });
+                } else {
+                    resolve({
+                        status: false,
+                        error: 'Delete ' + Model.collection.collectionName  + ' is fail!'
+                    });
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
+            }
+        });
     }
 };

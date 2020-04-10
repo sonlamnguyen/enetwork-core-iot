@@ -126,3 +126,16 @@ module.exports.update = [
         next();
     }
 ];
+
+module.exports.delete = [
+    check('id')
+        .isString()
+        .withMessage('Id is not string'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Reponses.error(res, 401, errors.array()[0]['msg']);
+        }
+        next();
+    }
+];
