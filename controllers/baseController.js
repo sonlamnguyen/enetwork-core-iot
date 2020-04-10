@@ -9,7 +9,9 @@ module.exports = {
                 const {page, pageSize} = query;
                 const limit = parseInt(pageSize) ? parseInt(pageSize) : 20;
                 const skip = parseInt(page) * limit;
-                const data = await Model.find({}).skip(skip).limit(limit);
+                delete query['page'];
+                delete query['pageSize'];
+                const data = await Model.find(query).skip(skip).limit(limit);
                 if (data && (data.length < 1)) {
                     resolve({
                         status: false,
@@ -30,11 +32,12 @@ module.exports = {
         });
     },
     
-    getById(Model, id) {
+    getById(Model, _id) {
         return new Promise(async function(resolve, reject) {
             try {
-                const data = await Model.findById(id);
-                if (data && (data.length < 1)) {
+                console.log(_id);
+                const data = await Model.findOne({_id});
+                if (!data) {
                     resolve({
                         status: false,
                         error: "Not found " + Model.collection.collectionName 
@@ -110,8 +113,29 @@ module.exports = {
         });
     },
 
-    addMany(req, res) {
-
+    addMany(Model, dataInserts) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const dataResult = await Model.insertMany(dataInserts);
+                if (!dataResult) {
+                    resolve({
+                        status: false,
+                        error: "Error inserts to " + Model.collection.collectionName  
+                    });
+                } else {
+                    resolve({
+                        status: true,
+                        data: dataResult
+                    });
+                }
+            } catch(error) {
+                console.log(error);
+                resolve({
+                    status: false,
+                    error: error.message
+                });
+            }
+        });
     },
 
     updateOne(Model, query, dataUpdate) {
@@ -150,7 +174,6 @@ module.exports = {
         return new Promise(async function(resolve, reject) {
             try {
                 const result = await Model.deleteOne({_id});
-                console.log(result);
                 if (result && result['ok'] && (result['deletedCount'] == 1)) {
                     resolve({
                         status: true,

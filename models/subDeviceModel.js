@@ -19,16 +19,16 @@ const subDeviceSchema = new mongoose.Schema({
         default: ''
     },
     type: {
-        type: Number,
+        type: String,
         required: true,
     },
     flows: {
         type: String,
-        required: true
+        required: false
     },
     capacity: {
         type: String,
-        required: true
+        required: false
     },
     status: {
         type: Boolean,
