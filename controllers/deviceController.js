@@ -10,7 +10,7 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
-            const {status, data, error} = await BaseController.list(Device, req.query);
+            const {status, data, error} = await BaseController.list(Device, req.query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {

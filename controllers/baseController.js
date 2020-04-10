@@ -1,9 +1,10 @@
 'use strict';
 const _ = require('lodash');
+const Utils = require('../libs/utils');
 const Promise = require('promise');
 
 module.exports = {
-    list(Model, query) {
+    list(Model, query, req) {
         return new Promise(async function(resolve, reject) {
             try {
                 const {page, pageSize} = query;
@@ -11,6 +12,7 @@ module.exports = {
                 const skip = parseInt(page) * limit;
                 delete query['page'];
                 delete query['pageSize'];
+                query = Utils.getQueryAuthen(req, query);
                 const data = await Model.find(query).skip(skip).limit(limit);
                 if (data && (data.length < 1)) {
                     resolve({
@@ -37,6 +39,31 @@ module.exports = {
             try {
                 console.log(_id);
                 const data = await Model.findOne({_id});
+                if (!data) {
+                    resolve({
+                        status: false,
+                        error: "Not found " + Model.collection.collectionName 
+                    });
+                } else {
+                    resolve({
+                        status: true,
+                        data
+                    });
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
+            }
+        });
+    },
+
+    getOne(Model, query, req) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                query = Utils.getQueryAuthen(req, query);
+                const data = await Model.findOne(query);
                 if (!data) {
                     resolve({
                         status: false,

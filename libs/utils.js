@@ -1,8 +1,13 @@
 'use strict';
 const Promise = require('promise');
 
-const SubDevice = require('../models/subDeviceModel');
 
+module.exports.getQueryAuthen = (req, query) => {
+    if (req.user.role != 'admin') {
+        query['userId'] = req.user._id;
+    }
+    return query;
+};
 
 module.exports.generateSubDevice = (device) => {
     return new Promise(async function(resolve, reject) {

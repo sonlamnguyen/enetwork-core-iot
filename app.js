@@ -10,6 +10,7 @@ const cors = require('cors');
 const authenRouter = require('./routes/authenRouter');
 const userRouter = require('./routes/userRouter');
 const devicesRouter = require('./routes/deviceRouter');
+const subDevicesRouter = require('./routes/subDeviceRouter');
 const webhookRoutes = require('./routes/webhookRouter');
 const Response = require('./libs/response');
 const app = express();
@@ -47,6 +48,7 @@ app.use(hpp());
 app.use('/api/v1/authen', authenRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/devices', devicesRouter);
+app.use('/api/v1/subdevices', subDevicesRouter);
 app.use('/api/v1/mqtt', webhookRoutes);
 
 // handle undefined Routes

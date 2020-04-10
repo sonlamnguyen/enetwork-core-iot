@@ -1,6 +1,8 @@
 const Response = require('../libs/response');
+const Utils = require('../libs/utils');
 
-const User = require('../models/userModel');
+const Device = require('../models/deviceModel');
+const SubDevice = require('../models/subDeviceModel');
 
 const BaseController = require('./baseController');
 
@@ -8,20 +10,26 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
-            const {status, data, error} = await BaseController.list(User, req.query, req);
+            let query = req.query;
+            const {status, data, error} = await BaseController.list(SubDevice, query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
                 return Response.success(res, data);
             }
         } catch(error) {
+            console.log(error);
             return Response.error(res, 500, error);
         }
     },
 
     async getById(req, res) {
         try {
-            const {status, data, error} = await BaseController.getById(User, req.params.id);
+            let query = {
+                _id: req.params.id
+            };
+            query = Utils.getQueryAuthen(req, query);
+            const {status, data, error} = await BaseController.getOne(SubDevice, query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
@@ -34,22 +42,15 @@ module.exports = {
 
     async add(req, res) {
         try {
-            if (req.body.password !== req.body.confirmPassword) {
-                return Response.error(res, 400, 'Password and confirm password not macthed!!!');
+            const query = {
+                deviceId: req.body.deviceId,
+                channelId: req.body.channelId
+            };
+            const {status, data, error} = await BaseController.addNotExist(SubDevice, query, req.body);
+            if (!status) {
+                return Response.error(res, 500, error);
             } else {
-                const query = {
-                    $or: [{
-                        userName: req.body.userName
-                    }, {
-                        email: req.body.email
-                    }]
-                };
-                const {status, data, error} = await BaseController.addNotExist(User, query, req.body);
-                if (!status) {
-                    return Response.error(res, 500, error);
-                } else {
-                    return Response.success(res, data);
-                }
+                return Response.success(res, data);
             }
         } catch(error) {
             return Response.error(res, 500, error);
@@ -62,10 +63,7 @@ module.exports = {
                 '_id' : req.params.id
             };
             const dataUpdate = req.body;
-            delete dataUpdate['username'];
-            delete dataUpdate['email'];
-            delete dataUpdate['password'];
-            const {status, data, error} = await BaseController.updateOne(User, query, dataUpdate);
+            const {status, data, error} = await BaseController.updateOne(Device, query, dataUpdate);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
@@ -75,9 +73,10 @@ module.exports = {
             return Response.error(res, 500, error);
         }
     },
+
     async delete(req, res) {
         try {
-            const {status, data, error} = await BaseController.delete(User, req.params.id);
+            const {status, data, error} = await BaseController.delete(Device, req.params.id);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
