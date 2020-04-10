@@ -7,10 +7,10 @@ const hpp = require('hpp');
 const cors = require('cors');
 
 
+const authenRouter = require('./routes/authenRouter');
 const userRouter = require('./routes/userRouter');
 const webhookRoutes = require('./routes/webhookRouter');
-const globalErrHandler = require('./controllers/errorController');
-const AppError = require('./utils/appError');
+const Response = require('./libs/response');
 const app = express();
 
 // Allow Cross-Origin requests
@@ -43,15 +43,13 @@ app.use(hpp());
 
 
 // Routes
+app.use('/api/v1/authen', authenRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/mqtt', webhookRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {
-    const err = new AppError(404, 'fail', 'undefined route');
-    next(err, req, res, next);
+    return Response.error(res, 404, 'undefined route');
 });
-
-app.use(globalErrHandler);
 
 module.exports = app;

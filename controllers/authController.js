@@ -1,10 +1,7 @@
-const {
-    promisify
-} = require('util');
+const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
 const Response = require('../libs/response');
 const User = require('../models/userModel');
-const AppError = require('../utils/appError');
 
 
 const createToken = id => {
@@ -18,23 +15,16 @@ const createToken = id => {
 module.exports = {
     async login(req, res, next) {
         try {
-            const {
-                email,
-                password
-            } = req.body;
-    
-            // 1) check if email and password exist
-            if (!email || !password) {
-                return next(new AppError(404, 'fail', 'Please provide email or password'), req, res, next);
-            }
-    
-            // 2) check if user exist and password is correct
             const user = await User.findOne({
-                email
+                $or: [{
+                    userName: req.body.author
+                }, {
+                    email: req.body.author
+                }]
             }).select('+password');
-    
-            if (!user || !await user.correctPassword(password, user.password)) {
-                return next(new AppError(401, 'fail', 'Email or Password is wrong'), req, res, next);
+
+            if (!user || !await user.correctPassword(req.body.password, user.password)) {
+                return Response.error(res, 400, 'Email or Password is wrong'); 
             }
     
             // 3) All correct, send jwt to client
@@ -43,16 +33,13 @@ module.exports = {
             // Remove the password from the output 
             user.password = undefined;
     
-            res.status(200).json({
-                status: 'success',
-                token,
-                data: {
-                    user
-                }
+            return Response.success(res, {
+                token: 'Bearer ' + token,
+                userId: user.id
             });
-    
         } catch (err) {
-            next(err);
+            console.log(err);
+            return Response.error(res, 500, 'Signup have a problem. Please, try again!');
         }
     }, 
 
@@ -62,10 +49,14 @@ module.exports = {
                 return Response.error(res, 400, 'Password and confirm password not macthed!!!');
             } else {
                 const user = await User.findOne({
-                    username: req.body.username
+                    $or: [{
+                        userName: req.body.userName
+                    }, {
+                        email: req.body.email
+                    }]
                 });
                 if(user) {
-                    return Response.error(res, 400, 'Username is exists');
+                    return Response.error(res, 400, 'Username or Email are exists');
                 } else {
                     const insertUser = await User.create({
                         firstName: req.body['firstName'] ? req.body['firstName'] : '',
@@ -77,11 +68,13 @@ module.exports = {
                         phone: req.body['phone'] ? req.body['phone'] : '',
                         avatar: req.body['avatar'] ? req.body['avatar'] : '',
                         password: req.body.password,
-                        role: req.body.role ? req.body.role : 1,
+                        role: req.body.role ? req.body.role : '',
                         status: req.body['status'] ? req.body['status'] : true,
                     });
                     if(insertUser) {
                         return Response.success(res, insertUser, 201);
+                    } else {
+                        return Response.error(res, 500, 'Register is fail!!');
                     }
                 }
             }
@@ -90,4 +83,32 @@ module.exports = {
 			return Response.error(res, 500, 'Register is fail!!');
         }
     },
+    
+    async authenticaion(req, res, next) {
+        try {
+            // 1) check if the token is there
+            let token;
+            if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+                token = req.headers.authorization.split(' ')[1];
+            }
+
+            if (!token) {
+                return Response.error(res, 500, 'You are not logged in! Please login in to continue');
+            }
+    
+            // 2) Verify token 
+            const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    
+            // 3) check if the user is exist (not deleted)
+            const user = await User.findById(decode.id);
+            if (!user) {
+                return Response.error(res, 500, 'This user is no longer exist');
+            }
+            req.user = user;
+            next();
+        } catch (err) {
+            console.log(err);
+            return Response.error(res, 500, 'Please login before call API');
+        }
+    }
 };

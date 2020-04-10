@@ -1,99 +1,152 @@
-const AppError = require('../utils/appError');
-const APIFeatures = require('../utils/apiFeatures');
+'use strict';
+const _ = require('lodash');
+const Promise = require('promise');
 
-exports.deleteOne = Model => async (req, res, next) => {
-    try {
-        const doc = await Model.findByIdAndDelete(req.params.id);
-
-        if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
-        }
-
-        res.status(204).json({
-            status: 'success',
-            data: null
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-exports.updateOne = Model => async (req, res, next) => {
-    try {
-        const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
-
-        if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
-        }
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                doc
+module.exports = {
+    list(Model, query) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const {page, pageSize} = query;
+                const limit = parseInt(pageSize) ? parseInt(pageSize) : 20;
+                const skip = parseInt(page) * limit;
+                const data = await Model.find({}).skip(skip).limit(limit);
+                if (data && (data.length < 1)) {
+                    resolve({
+                        status: false,
+                        error: "Not found " + Model.collection.collectionName 
+                    });
+                } else {
+                    resolve({
+                        status: true,
+                        data
+                    });
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
             }
         });
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-exports.createOne = Model => async (req, res, next) => {
-    try {
-        const doc = await Model.create(req.body);
-
-        res.status(201).json({
-            status: 'success',
-            data: {
-                doc
+    },
+    
+    getById(Model, id) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const data = await Model.findById(id);
+                if (data && (data.length < 1)) {
+                    resolve({
+                        status: false,
+                        error: "Not found " + Model.collection.collectionName 
+                    });
+                } else {
+                    resolve({
+                        status: true,
+                        data
+                    });
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
             }
         });
+    },
 
-    } catch (error) {
-        next(error);
-    }
-};
-
-exports.getOne = Model => async (req, res, next) => {
-    try {
-        const doc = await Model.findById(req.params.id);
-
-        if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
-        }
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                doc
+    addOne(Model, dataInsert) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const data = await Model.create(dataInsert);
+                if (data && (data.length < 1)) {
+                    resolve({
+                        status: false,
+                        error: "Error insert to " + Model.collection.collectionName 
+                    });
+                } else {
+                    resolve({
+                        status: true,
+                        data
+                    });
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
             }
         });
-    } catch (error) {
-        next(error);
-    }
-};
+    },
 
-exports.getAll = Model => async (req, res, next) => {
-    try {
-        const features = new APIFeatures(Model.find(), req.query)
-            .sort()
-            .paginate();
-
-        const doc = await features.query;
-
-        res.status(200).json({
-            status: 'success',
-            results: doc.length,
-            data: {
-                data: doc
+    addNotExist(Model, query, dataInsert) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const dataOld = await Model.findOne(query);
+                if (dataOld) {
+                    resolve({
+                        status: false,
+                        error: Model.collection.collectionName + " is exist"  
+                    });
+                } else {
+                    const dataNew = await Model.create(dataInsert);
+                    if (!dataNew) {
+                        resolve({
+                            status: false,
+                            error: "Error insert to " + Model.collection.collectionName 
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            data: dataNew
+                        });
+                    }
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
             }
         });
+    },
 
-    } catch (error) {
-        next(error);
+    addMany(req, res) {
+
+    },
+
+    updateOne(Model, query, dataUpdate) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const oldData = await Model.findOne(query);
+                if (!oldData) {
+                    resolve({
+                        status: false,
+                        error: Model.collection.collectionName + " is not found"  
+                    });
+                } else {
+                    const migrateData =  _.merge(oldData, dataUpdate);
+                    const dataSave = await migrateData.save();
+                    if (!dataSave) {
+                        resolve({
+                            status: false,
+                            error: "Error update to " + Model.collection.collectionName 
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            data: dataSave
+                        });
+                    }
+                }
+            } catch(error) {
+                resolve({
+                    status: false,
+                    error: error.message
+                });
+            }
+        });
+    },
+    async delete(req, res) {
+
     }
-
 };
