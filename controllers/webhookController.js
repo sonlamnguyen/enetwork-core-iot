@@ -5,6 +5,7 @@ module.exports = {
     process_rule: (req, res, next) => {
         console.log('####################### Process Rule ######################');
         const payload = JSON.parse(req.body['payload']);
+        console.log(req.body);
         console.log(payload);
         console.log(payload['ma_lenh']);
         return res.status(200).json({
