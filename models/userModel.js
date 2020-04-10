@@ -4,9 +4,17 @@ const bcrypt = require('bcryptjs');
 
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
         type: String,
-        required: [true, 'Please fill your name']
+        required: false
+    },
+    lastName: {
+        type: String,
+        required: false
+    },
+    userName: {
+        type: String,
+        required: [true, 'Please fill your username']
     },
     email: {
         type: String,
@@ -16,6 +24,22 @@ const userSchema = new mongoose.Schema({
         validate: [validator.isEmail, ' Please provide a valid email']
 
     },
+    company: {
+        type: String,
+        required: false
+    },
+    address: {
+        type: String,
+        required: false
+    },
+    phone: {
+        type: String,
+        required: false
+    },
+    avatar: {
+        type: String,
+        required: false
+    },
     password: {
         type: String,
         required: [true, 'Please fill your password'],
@@ -23,23 +47,12 @@ const userSchema = new mongoose.Schema({
         select: false
 
     },
-    passwordConfirm: {
-        type: String,
-        required: [true, 'Please fill your password confirm'],
-        validate: {
-            validator: function (el) {
-                // "this" works only on create and save 
-                return el === this.password;
-            },
-            message: 'Your password and confirmation password are not the same'
-        }
-    },
     role: {
         type: String,
         enum: ['admin', 'teacher', 'student'],
         default: 'student'
     },
-    active: {
+    status: {
         type: Boolean,
         default: true,
         select: false
@@ -56,9 +69,7 @@ userSchema.pre('save', async function (next) {
 
     // Hashing the password
     this.password = await bcrypt.hash(this.password, 12);
-
-    // Delete passwordConfirm field
-    this.passwordConfirm = undefined;
+    
     next();
 });
 

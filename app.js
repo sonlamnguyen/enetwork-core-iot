@@ -7,7 +7,8 @@ const hpp = require('hpp');
 const cors = require('cors');
 
 
-const userRoutes = require('./routes/userRoutes');
+const userRouter = require('./routes/userRouter');
+const webhookRoutes = require('./routes/webhookRouter');
 const globalErrHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const app = express();
@@ -42,7 +43,8 @@ app.use(hpp());
 
 
 // Routes
-app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/mqtt', webhookRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {
