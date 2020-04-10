@@ -58,7 +58,6 @@ module.exports = {
 
     async update(req, res) {
         try {
-            console.log(req.body);
             const query  = {
                 '_id' : req.params.id
             };

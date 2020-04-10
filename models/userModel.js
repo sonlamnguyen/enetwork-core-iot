@@ -62,12 +62,25 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
         select: false
+    },
+    created_at: {
+        type: Date,
+        default: new Date()
+    },
+    updated_at: {
+        type: Date
     }
 });
 
 // encrypt the password using 'bcryptjs'
 // Mongoose -> Document Middleware
 userSchema.pre('save', async function (next) {
+    now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+      this.created_at = now;
+    }
+
     // check the password if it is modified
     if (!this.isModified('password')) {
         return next();
