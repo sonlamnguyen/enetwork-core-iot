@@ -12,46 +12,35 @@ module.exports.getQueryAuthen = (req, query) => {
 module.exports.generateSubDevice = (device) => {
     return new Promise(async function(resolve, reject) {
         try {
+            let subDevice = {
+                userId: device['userId'],
+                deviceId: device['deviceId'],
+                channelId: 1,
+                name: '',
+                type: '',
+                flows: '',
+                capacity: '',
+                status: true
+            };
             const subDevices = [];
             for (let i = 1; i <= parseInt(device['inputs']); i++) {
-                const input = {
-                    userId: device['userId'],
-                    deviceId: device['deviceId'],
-                    channelId: i,
-                    name: 'input_device_' + i,
-                    type: 'input',
-                    flows: '',
-                    capacity: '',
-                    status: true
-                };
-                subDevices.push(input);
+                subDevice.channelId = i;
+                subDevice.name = 'input_device_' + i;
+                subDevice.type = 'input';
+                subDevices.push(subDevice);
             }
 
             for (let i = 1; i <= parseInt(device['outputs']); i++) {
-                const output = {
-                    userId: device['userId'],
-                    deviceId: device['deviceId'],
-                    channelId: i,
-                    name: 'output_device_' + i,
-                    type: 'output',
-                    flows: '',
-                    capacity: '',
-                    status: true
-                };
+                subDevice.channelId = i;
+                subDevice.name = 'output_device_' + i;
+                subDevice.type = 'output';
                 subDevices.push(output);
             }
 
             for (let i = 1; i <= parseInt(device['analogs']); i++) {
-                const analog = {
-                    userId: device['userId'],
-                    deviceId: device['deviceId'],
-                    channelId: i,
-                    name: 'analog_device_' + i,
-                    type: 'analog',
-                    flows: '',
-                    capacity: '',
-                    status: true
-                };
+                subDevice.channelId = i;
+                subDevice.name = 'analog_device_' + i;
+                subDevice.type = 'analog';
                 subDevices.push(analog);
             }
             resolve({

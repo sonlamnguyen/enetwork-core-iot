@@ -1,6 +1,9 @@
+const _ = require('lodash');
 const Response = require('../libs/response');
 const Utils = require('../libs/utils');
 const EmqxHelper = require('../libs/emqxHelper');
+
+const ThingService = require('../services/thingService');
 
 const Device = require('../models/deviceModel');
 const SubDevice = require('../models/subDeviceModel');
@@ -11,9 +14,13 @@ const BaseController = require('./baseController');
 module.exports = {
     async control(req, res) {
         try {
-            const request = await EmqxHelper.getOptionRequest(req.body.deviceId, req.body.topic, req.body.payload);
-            const control = await EmqxHelper.requestPromise(request);
-            return Response.success(res, control);
+            const {status, data, error} = await ThingService.control(req.body.deviceId, req.body.topic, req.body.payload);
+            console.log(data);
+            if (status) {
+                return Response.success(res, data);
+            } else {
+                return Response.error(res, 500, error);
+            }
         } catch(error) {
             console.log(error);
             return Response.error(res, 500, error);
@@ -22,12 +29,21 @@ module.exports = {
 
     async connection(req, res) {
         try {
-            const request = await EmqxHelper.getOptionRequest(req.body.deviceId, req.body.topic, req.body.payload);
-            const control = await EmqxHelper.requestPromise(request);
-            return Response.success(res, control);
+            const isConnection = await ThingService.connection(req.params.deviceId);
+            console.log(isConnection);
+            if (isConnection) {
+                return Response.success(res, {
+                    [req.params.deviceId] : true
+                });
+            } else {
+                return Response.success(res, {
+                    [req.params.deviceId] : false
+                });
+            }
         } catch(error) {
-            console.log(error);
-            return Response.error(res, 500, error);
+            return Response.success(res, {
+                [req.params.deviceId] : false
+            });
         }
     },
 };
