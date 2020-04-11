@@ -9,7 +9,15 @@ const reportRawDeviceSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    input: {
+    input1: {
+        type: String,
+        required: false,
+    },
+    input2: {
+        type: String,
+        required: false,
+    },
+    input3: {
         type: String,
         required: false,
     },
@@ -21,11 +29,19 @@ const reportRawDeviceSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    output3: {
+        type: String,
+        required: false
+    },
     warning1: {
         type: String,
         required: false
     },
     warning2: {
+        type: String,
+        required: false
+    },
+    warning3: {
         type: String,
         required: false
     },
@@ -46,6 +62,26 @@ const reportRawDeviceSchema = new mongoose.Schema({
         required: false
     },
     backup5: {
+        type: String,
+        required: false
+    },
+    backup6: {
+        type: String,
+        required: false
+    },
+    backup7: {
+        type: String,
+        required: false
+    },
+    backup8: {
+        type: String,
+        required: false
+    },
+    backup9: {
+        type: String,
+        required: false
+    },
+    backup10: {
         type: String,
         required: false
     },
