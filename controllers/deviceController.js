@@ -45,6 +45,7 @@ module.exports = {
                 return Response.error(res, 500, error);
             } else {
                 const result = await Utils.generateSubDevice(data);
+                console.log(result);
                 if (result.status) {
                     const resultSubDevices = await BaseController.addMany(SubDevice, result.subDevices);
                     if (resultSubDevices.status) {

@@ -14,6 +14,7 @@ router.get('/', subDeviceValidate.list, subDeviceController.list);
 router.get('/:id', subDeviceValidate.getById, subDeviceController.getById);
 router.post('/', subDeviceValidate.add, subDeviceController.add);
 router.put('/:id', subDeviceValidate.update, subDeviceController.update);
+router.put('update-by-query/:id', subDeviceValidate.update, subDeviceController.update);
 router.delete('/:id', subDeviceValidate.delete, subDeviceController.delete);
 
 module.exports = router;

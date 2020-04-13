@@ -104,5 +104,5 @@ reportRawDeviceSchema.pre('save', async function (next) {
 });
 
 
-const ReportRawDevice = mongoose.model('reportRawDevice', reportRawDeviceSchema);
+const ReportRawDevice = mongoose.model('report_raw_device', reportRawDeviceSchema);
 module.exports = ReportRawDevice;

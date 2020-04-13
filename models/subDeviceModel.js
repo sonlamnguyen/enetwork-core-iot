@@ -53,5 +53,5 @@ subDeviceSchema.pre('save', async function (next) {
 });
 
 
-const SubDevice = mongoose.model('subDevice', subDeviceSchema);
+const SubDevice = mongoose.model('sub_device', subDeviceSchema);
 module.exports = SubDevice;

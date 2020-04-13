@@ -52,5 +52,5 @@ deviceSchema.pre('save', async function (next) {
     next();
 });
 
-const Device = mongoose.model('Device', deviceSchema);
+const Device = mongoose.model('device', deviceSchema);
 module.exports = Device;

@@ -1,23 +1,18 @@
 const _ = require('lodash');
-const Response = require('../libs/response');
 const EmqxHelper = require('../libs/emqxHelper');
+const ReportRawDevice = require('../models/reportRawDeviceModel');
 
 module.exports = {
     dinhKy(payload) {
         return new Promise(async function(resolve, reject) {
             try {
-                const request = await EmqxHelper.getControlRequest(deviceId, topic, payload);
-                const control = await EmqxHelper.requestPromise(request);
-                resolve({
-                    status: true,
-                    data: control
-                });
+                const dataInsert = payload;
+                delete dataInsert['maLenh'];
+                console.log(dataInsert);
+                await ReportRawDevice.create(dataInsert);
+                resolve(true);
             } catch(error) {
-                console.log(error);
-                resolve({
-                    status: false,
-                    error: error.message
-                });
+                resolve(false);
             }
         });
     },

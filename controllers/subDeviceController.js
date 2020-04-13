@@ -11,6 +11,12 @@ module.exports = {
     async list(req, res) {
         try {
             let query = req.query;
+            if (!query['channelId']) {
+                delete query['channelId'];
+            }
+            if (!query['type']) {
+                delete query['type'];
+            }
             const {status, data, error} = await BaseController.list(SubDevice, query, req);
             if (!status) {
                 return Response.error(res, 500, error);
