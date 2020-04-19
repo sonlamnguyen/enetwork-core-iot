@@ -14,7 +14,29 @@ const BaseController = require('./baseController');
 module.exports = {
     async control(req, res) {
         try {
-            const {status, data, error} = await ThingService.control(req.body.deviceId, req.body.topic, req.body.payload);
+            const device = await ThingService.checkPermissionDevice(req);
+            if (!device) {
+                return Response.error(res, 500, "Device not found!!");
+            }
+            const {status, data, error} = await ThingService.control(req.body.deviceId, req.body.payload);
+            if (status) {
+                return Response.success(res, data);
+            } else {
+                return Response.error(res, 500, error);
+            }
+        } catch(error) {
+            console.log(error);
+            return Response.error(res, 500, error);
+        }
+    },
+
+    async config(req, res) {
+        try {
+            const device = await ThingService.checkPermissionDevice(req);
+            if (!device) {
+                return Response.error(res, 500, "Device not found!!");
+            }
+            const {status, data, error} = await ThingService.config(req.body.deviceId, req.body.payload);
             console.log(data);
             if (status) {
                 return Response.success(res, data);

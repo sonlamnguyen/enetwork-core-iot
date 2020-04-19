@@ -44,7 +44,8 @@ module.exports = {
         console.log('####################### Auth ######################');
         console.log(req.query);
         console.log(req.params);
-        return res.status(200).json(false);
+        console.log(req.body);
+        return res.status(200).json(true);
     },
 
     async auth_acl(req, res, next) {

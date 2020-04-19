@@ -9,6 +9,7 @@ const thingControlController = require('../controllers/thingControlController');
 router.use(authController.authenticaion);
 
 router.post('/control', thingControlController.control);
+router.post('/config', thingControlController.config);
 router.get('/connection/:deviceId', thingControlController.connection);
 
 module.exports = router;
