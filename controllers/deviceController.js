@@ -23,7 +23,6 @@ module.exports = {
 
     async getById(req, res) {
         try {
-            console.log(req.params.id);
             const {status, data, error} = await BaseController.getById(Device, req.params.id);
             if (!status) {
                 return Response.error(res, 500, error);
@@ -45,7 +44,6 @@ module.exports = {
                 return Response.error(res, 500, error);
             } else {
                 const result = await Utils.generateSubDevice(data);
-                console.log(result);
                 if (result.status) {
                     const resultSubDevices = await BaseController.addMany(SubDevice, result.subDevices);
                     if (resultSubDevices.status) {
