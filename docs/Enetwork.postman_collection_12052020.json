@@ -1,0 +1,1361 @@
+{
+	"info": {
+		"_postman_id": "5e132094-c89d-4952-96c2-976ef173733f",
+		"name": "Enetwork",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "authen",
+			"item": [
+				{
+					"name": "1. Signin (success)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1346991b-68cc-4e6a-808a-f62ccbbd642e",
+								"exec": [
+									"pm.test(\"Token returned from login, added to environment.\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data\");",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set('authToken', jsonData.data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"author\":\"sonlamnguyenw13\",\n\t\"password\":\"123456\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/authen/login",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authen",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Signup (success)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{ \n\t\"userName\": \"sonlamnguyenw13\",\n\t\"email\": \"sonlamnguyenw13@gmail.com\",\n\t\"password\":\"123456\",\n\t\"confirmPassword\": \"123456\",\n\t\"role\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/authen/signup",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authen",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "1. add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"userName\": \"sonlamnguyenw17\",\n\t\"email\": \"sonlamnguyenw17@gmail.com\",\n\t\"password\":\"123456\",\n\t\"confirmPassword\": \"123456\",\n\t\"role\": \"user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/users",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{url_api}}/api/v1/users?page=0&pageSize=4",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. getById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{url_api}}/api/v1/users/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e93e5cf225502066e62ef67"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"firstName\": \"first name\",\n\t\"lastName\": \"last name\",\n\t\"email\": \"example@gmail.com\",\n\t\"address\": \"Thái Bình\",\n\t\"company\": \"Enetwork\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/users/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e93e5cf225502066e62ef67"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/users/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e901b87ea8db866a288b765"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "devices",
+			"item": [
+				{
+					"name": "1. add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"userId\": \"5e93e5cf225502066e62ef67\",\n\t\"deviceId\": \"ms0003\",\n\t\"type\": 1,\n\t\"name\": \"device 10\",\n\t\"inputs\": 2,\n\t\"outputs\": 3,\n\t\"analogs\": 32,\n\t\"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/devices",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{url_api}}/api/v1/devices?page=0&pageSize=4",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "4"
+								},
+								{
+									"key": "name",
+									"value": "device 1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. getById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{url_api}}/api/v1/devices/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e9078f571d8cd13aeff0b77"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"userId\": \"5e9007e88a491c3a0987483a\",\n\t\"deviceId\": \"ms004\",\n\t\"type\": 1,\n\t\"name\": \"device 4 changed\",\n\t\"inputs\": 12,\n\t\"outputs\": 8,\n\t\"analogs\": 7,\n\t\"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/devices/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e9078f571d8cd13aeff0b77"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/devices/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e9078f571d8cd13aeff0b77"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "subDevices",
+			"item": [
+				{
+					"name": "1. add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"userId\": \"5e9007e88a491c3a0987483a\",\n\t\"deviceId\": \"ms009\",\n\t\"channelId\": 33,\n\t\"type\": \"input\",\n\t\"name\": \"device 9\",\n\t\"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/subdevices",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subdevices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{url_api}}/api/v1/subdevices?page=0&pageSize=100&deviceId=ms0003",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subdevices"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "100"
+								},
+								{
+									"key": "deviceId",
+									"value": "ms0003"
+								},
+								{
+									"key": "channelId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "analog",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. getById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{url_api}}/api/v1/subdevices/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subdevices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e9078f571d8cd13aeff0b77"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"userId\": \"5e9007e88a491c3a0987483a\",\n\t\"deviceId\": \"ms004\",\n\t\"type\": 1,\n\t\"name\": \"device 4 changed\",\n\t\"inputs\": 12,\n\t\"outputs\": 8,\n\t\"analogs\": 7,\n\t\"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/subdevices/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subdevices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e9078f571d8cd13aeff0b77"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/subdevices/:id",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subdevices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5e9078f571d8cd13aeff0b77"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "thing",
+			"item": [
+				{
+					"name": "1. control-dieu-khien",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"deviceId\": \"ms00010\",\n\t\"payload\": {\n\t\t\"maLenh\":\"DIEU_KHIEN\",\t\n\t\t\"control1\":\"65535\",\t\t\n\t\t\"control2\":\"65535\",\t\t\n\t\t\"control3\":\"65535\",\t\t\n\t\t\"control4\":\"65535\",\t\t\n\t\t\"control5\":\"65535\"\t\t\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/things/control",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"things",
+								"control"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. control-hen-gio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"deviceId\": \"ms00010\",\n\t\"payload\": {\n\t\t\"maLenh\":\"HEN_GIO\",\t\n\t\t\"mayBom\":\"1\",\t\n\t\t\"timeOn\":\"100\",\t\n\t\t\"timeOff\":\"30\"\t\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/things/control",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"things",
+								"control"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. control-cau-hinh",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"deviceId\": \"ms000232\",\n\t\"payload\": {\n\t\t\"maLenh\":\"CAU_HINH\",\t\n\t\t\"deviceId\":\"MS0001\",\t\n\t\t\"idCty\":\"CTY001\",\t\t\n\t\t\"firmVer\":\"PLC_RL050320\",\n\t\t\"config\":\"65535\",\t\n\t\t\"sdt1\":\"0989999996\",\t\t\n\t\t\"sdt2\":\"0989999997\",\t\t\n\t\t\"sdt3\":\"0989999998\",\t\t\n\t\t\"sdt4\":\"0989999999\"\t\t\n\t}\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/things/config",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"things",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. control-update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"deviceId\": \"ms0001\",\n\t\"payload\": {\n\t\t\"maLenh\":\"UPDATE\",\t\t\t\t\n\t\t\"deviceId\": \"MS0001\",\t\t\t\n\t\t\"server\":\"10.0.34.66\",\t\t\t\n\t\t\"port\":\"21\",\t\t\t\t\t\n\t\t\"username\":\"testuser\",\t\t\t\n\t\t\"password\":\"123456\",\t\t\t\n\t\t\"firmVer\":\"PLC_RL120220.bin\",\t\n\t\t\"path\":\"/FIRM/PLC/\",\t\t\t\n\t\t\"crc\":\"12345\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/things/config",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"things",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. checkConnection",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/things/connection/:deviceId",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"things",
+								"connection",
+								":deviceId"
+							],
+							"variable": [
+								{
+									"key": "deviceId",
+									"value": "ms009"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "mqtt",
+			"item": [
+				{
+					"name": "1. process-rule (success)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"label\": \"Setting 1\",\n    \"key\": \"setting_2\",\n    \"value\": \"setting_1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/mqtt/process-rule",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mqtt",
+								"process-rule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. auth",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"label\": 1,\n    \"key\": \"goal_2\",\n    \"value\": \"goal_1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v1/mqtt/auth",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mqtt",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "media",
+			"item": [
+				{
+					"name": "1. Upload single Image (success)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1346991b-68cc-4e6a-808a-f62ccbbd642e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "media",
+									"type": "file",
+									"src": "/home/sonlam/Pictures/Screenshot from 2019-09-02 15-56-21.png"
+								},
+								{
+									"key": "image_category_id",
+									"value": "1",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_api}}/api/v2/media",
+							"host": [
+								"{{url_api}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"media"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1. Upload single Image(fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1346991b-68cc-4e6a-808a-f62ccbbd642e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "media",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "category_type",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "business_profile_id",
+									"value": "1",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v2/media",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v2",
+								"media"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Upload multi Images (success)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1346991b-68cc-4e6a-808a-f62ccbbd642e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "medias",
+									"type": "file",
+									"src": [
+										"/home/sonlam/Pictures/Can-Elon-Musk-Make-Us-Smarter-with-Brain-Chips-Feature.jpg",
+										"/home/sonlam/Pictures/Screenshot from 2019-09-02 15-56-21.png",
+										"/home/sonlam/Pictures/Screenshot from 2019-09-04 20-53-09.png"
+									]
+								},
+								{
+									"key": "image_category_id",
+									"value": "2",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v2/medias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v2",
+								"medias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Upload multi Images(fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1346991b-68cc-4e6a-808a-f62ccbbd642e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "medias",
+									"type": "file",
+									"src": [
+										"/home/sonlam/Pictures/Can-Elon-Musk-Make-Us-Smarter-with-Brain-Chips-Feature.jpg",
+										"/home/sonlam/Pictures/Screenshot from 2019-09-02 15-56-21.png",
+										"/home/sonlam/Pictures/Screenshot from 2019-09-04 20-53-09.png"
+									]
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v2/medias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v2",
+								"medias"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
