@@ -2,6 +2,13 @@ var Promise = require('promise');
 var request = require('request');
 var serialize = require('serialize-javascript');
 
+
+module.exports.EVENT = {
+    CONNECT: 'client.connected',
+    DISCONECT: 'client.disconnected',
+    PUBLISH: 'message.publish'
+};
+
 module.exports.getControlRequest = async (clientId, topic, payload) => {
     return new Promise(function(resolve, reject) {
         let baseUrl = process.env.MQTT_BASE_URL;
