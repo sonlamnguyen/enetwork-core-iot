@@ -21,6 +21,7 @@
     "hpp": "^0.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.7",
+    "morgan": "^1.10.0",
     "promise": "^8.1.0",
     "request": "^2.88.2",
     "serialize-javascript": "^3.0.0",
