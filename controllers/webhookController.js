@@ -10,7 +10,7 @@ module.exports = {
         console.log('####################### Process Rule ######################');
         try {
             const body = req.body;
-            console.logog(body);
+            console.log(body);
             const event = (body && body['event']) ? body['event'] : null;
             if (event) {         
                 if (EVENT.PUBLISH == event) {
@@ -55,15 +55,22 @@ module.exports = {
     async auth(req, res, next) {
         console.log('####################### Auth ######################');
         console.log(req.query);
-        console.log(req.params);
-        console.log(req.body);
-        return res.status(200).json(true);
+        const dataAuth = req.query;
+        if (dataAuth && (dataAuth['username'] == dataAuth['clientid']) && (dataAuth['password'] === '123456')) {
+            return res.status(200).json(true);
+        } else {
+            return res.status(400).json(false);
+        }
     },
 
     async auth_acl(req, res, next) {
         console.log('####################### Auth ACL ######################');
-        console.log(req.body);
-        console.log(req.params);
-        return res.status(200).json(true);
+        console.log(req.query);
+        const dataAuth = req.query;
+        if (dataAuth && (dataAuth['username'] == dataAuth['clientid'])) {
+            return res.status(200).json(true);
+        } else {
+            return res.status(400).json(false);
+        }
     }
 };
