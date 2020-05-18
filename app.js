@@ -7,6 +7,8 @@ const hpp = require('hpp');
 const cors = require('cors');
 const morgan = require('morgan');
 
+const io = require('./libs/redisSocket');
+
 
 const authenRouter = require('./routes/authenRouter');
 const userRouter = require('./routes/userRouter');
@@ -48,6 +50,12 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(hpp());
 
+app.use('/:id', function(req, res, next) {
+    console.log(req.params);
+    io.to(req.params.id).emit('status', { data:  req.params.id});
+    return res.status(200).send('ok');
+});
+    
 
 // Routes
 app.use('/api/v1/authen', authenRouter);
