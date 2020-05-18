@@ -3,4 +3,10 @@ const io = require('socket.io-emitter')({
     port: process.env.REDIS_PORT, 
     key: process.env.REDIS_NAMESPACE
 });
-module.exports = io;
+
+
+module.exports = {
+    emitStatusSocket(userId, data) {
+        io.to(userId).emit('status', data);
+    },
+};

@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Response = require('../libs/response');
 const Utils = require('../libs/utils');
 const EmqxHelper = require('../libs/emqxHelper');
+const {emitStatusSocket} = require('../libs/redisSocket');
 
 const ThingService = require('../services/thingService');
 
@@ -18,6 +19,7 @@ module.exports = {
             if (!device) {
                 return Response.error(res, 500, "Device not found!!");
             }
+            emitStatusSocket(req.body.deviceId, {data: req.body.payload});
             const {status, data, error} = await ThingService.control(req.body.deviceId, req.body.payload);
             if (status) {
                 return Response.success(res, data);
