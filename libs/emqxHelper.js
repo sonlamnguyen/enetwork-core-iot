@@ -6,7 +6,8 @@ var serialize = require('serialize-javascript');
 module.exports.EVENT = {
     CONNECT: 'client.connected',
     DISCONECT: 'client.disconnected',
-    PUBLISH: 'message.publish'
+    PUBLISH: 'message.publish',
+    SUBSCRIBE: 'client.subscribe'
 };
 
 module.exports.getControlRequest = async (clientId, topic, payload) => {

@@ -41,6 +41,8 @@ module.exports = {
                                 console.log('not found command');
                         }
                     }
+                } else if (EVENT.SUBSCRIBE == event) {
+                    console.log('subscribe');
                 } else if (EVENT.CONNECT == event) {
                     console.log('connection');
                 } else if (EVENT.DISCONECT == event) {
@@ -67,6 +69,13 @@ module.exports = {
         console.log('####################### Auth ACL ######################');
         console.log(req.query);
         const dataAuth = req.query;
+        if (process.env.ALLOW_SUBSCRIBE_ALL == 'false') {
+            const topic = dataAuth['topic'];
+            const clientId = dataAuth['clientid'];
+            if (!topic.includes(clientId)) {
+                return res.status(400).json(false);
+            }
+        }
         if (dataAuth && (dataAuth['username'] == dataAuth['clientid'])) {
             return res.status(200).json(true);
         } else {
