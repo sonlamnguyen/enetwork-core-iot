@@ -14,7 +14,7 @@ module.exports = {
                 } else {
                     const userId = deviceData['userId'];
                     const data  = {
-                        clientId : status
+                        [clientId] : status
                     };
                     emitStatusSocket(userId, data);
                     resolve(true);

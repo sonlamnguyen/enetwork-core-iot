@@ -42,7 +42,7 @@ app.use(express.json({
 }));
 
 // Data sanitization against Nosql query injection
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 
 // Data sanitization against XSS(clean user input from malicious HTML code)
 app.use(xss());

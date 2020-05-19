@@ -3,6 +3,7 @@ const Reponses = require('../libs/response');
 
 module.exports.add = [
     check('userId')
+        .optional()
         .isString()
         .withMessage('userId is not string'),
     check('deviceId')
@@ -69,6 +70,7 @@ module.exports.getById = [
 
 module.exports.update = [
     check('userId')
+        .optional()
         .isString()
         .withMessage('userId is not string'),
     check('deviceId')

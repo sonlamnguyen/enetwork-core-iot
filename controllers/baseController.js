@@ -37,7 +37,6 @@ module.exports = {
     getById(Model, _id) {
         return new Promise(async function(resolve, reject) {
             try {
-                console.log(_id);
                 const data = await Model.findOne({_id});
                 if (!data) {
                     resolve({
