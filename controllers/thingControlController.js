@@ -19,7 +19,7 @@ module.exports = {
             if (!device) {
                 return Response.error(res, 500, "Device not found!!");
             }
-            emitStatusSocket(req.body.deviceId, {data: req.body.payload});
+
             const {status, data, error} = await ThingService.control(req.body.deviceId, req.body.payload);
             if (status) {
                 return Response.success(res, data);

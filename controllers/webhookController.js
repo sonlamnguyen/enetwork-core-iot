@@ -3,6 +3,7 @@ const command = require('../configs/command');
 const base = require('./baseController');
 const {EVENT} = require('../libs/emqxHelper');
 
+const WebhookEventService = require('../services/webhookEventService');
 const WebhookService = require('../services/webhookService');
 
 module.exports = {
@@ -45,8 +46,10 @@ module.exports = {
                     console.log('subscribe');
                 } else if (EVENT.CONNECT == event) {
                     console.log('connection');
+                    await WebhookEventService.statusDevice(body['client_id'], true);
                 } else if (EVENT.DISCONECT == event) {
                     console.log('disconnection');
+                    await WebhookEventService.statusDevice(body['client_id'], false);
                 }
             }
             return res.status(200).send("ok");
@@ -59,9 +62,14 @@ module.exports = {
         console.log(req.query);
         const dataAuth = req.query;
         if (dataAuth && (dataAuth['username'] == dataAuth['clientid']) && (dataAuth['password'] === '123456')) {
-            return res.status(200).json(true);
+            const checkDevice = await WebhookEventService.checkDeviceExist(dataAuth['clientid']);
+            if (!checkDevice) {
+                return res.status(400).send(false);
+            } else {
+                return res.status(200).send(true);
+            }
         } else {
-            return res.status(400).json(false);
+            return res.status(400).send(false);
         }
     },
 
@@ -73,13 +81,13 @@ module.exports = {
             const topic = dataAuth['topic'];
             const clientId = dataAuth['clientid'];
             if (!topic.includes(clientId)) {
-                return res.status(400).json(false);
+                return res.status(400).send(false);
             }
         }
         if (dataAuth && (dataAuth['username'] == dataAuth['clientid'])) {
-            return res.status(200).json(true);
+            return res.status(200).send(true);
         } else {
-            return res.status(400).json(false);
+            return res.status(400).send(false);
         }
     }
 };
