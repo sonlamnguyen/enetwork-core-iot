@@ -35,8 +35,7 @@ const deviceSchema = new mongoose.Schema({
         default: true
     },
     created_at: {
-        type: Date,
-        default: new Date()
+        type: Date
     },
     updated_at: {
         type: Date

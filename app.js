@@ -23,7 +23,9 @@ const app = express();
 // Allow Cross-Origin requests
 app.use(cors());
 
-app.use(morgan('combined'));
+if (process.env.NODE_ENVIROMMENT === 'development') {
+    app.use(morgan('combined'));
+}
 
 // Set security HTTP headers
 app.use(helmet());

@@ -40,8 +40,7 @@ const reportDeviceSchema = new mongoose.Schema({
         }
     }],
     created_at: {
-        type: Date,
-        default: new Date()
+        type: Date
     },
     updated_at: {
         type: Date
