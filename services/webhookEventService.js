@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const EmqxHelper = require('../libs/emqxHelper');
 const Device = require('../models/deviceModel');
+const LogStatusDevice = require('../models/logStatusDevice');
 
 const {emitStatusSocket} = require('../libs/redisSocket');
 
@@ -17,6 +18,10 @@ module.exports = {
                         [clientId] : status
                     };
                     emitStatusSocket(userId, data);
+                    await LogStatusDevice.create({
+                        deviceId: clientId,
+                        status: status
+                    });
                     resolve(true);
                 }
             } catch(error) {
