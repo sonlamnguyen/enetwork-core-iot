@@ -28,7 +28,7 @@ if (process.env.NODE_ENVIROMMENT === 'development') {
 }
 
 // Set security HTTP headers
-app.use(helmet());
+// app.use(helmet());
 
 // Limit request from the same API 
 const limiter = rateLimit({
@@ -47,10 +47,10 @@ app.use(express.json({
 // app.use(mongoSanitize());
 
 // Data sanitization against XSS(clean user input from malicious HTML code)
-app.use(xss());
+// app.use(xss());
 
 // Prevent parameter pollution
-app.use(hpp());
+// app.use(hpp());
 
 
 // Routes
