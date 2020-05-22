@@ -3,6 +3,8 @@ const EmqxHelper = require('../libs/emqxHelper');
 const Device = require('../models/deviceModel');
 const LogStatusDevice = require('../models/logStatusDevice');
 
+const BaseController = require('../controllers/baseController');
+
 const {emitStatusSocket} = require('../libs/redisSocket');
 
 module.exports = {
@@ -17,6 +19,7 @@ module.exports = {
                     const data  = {
                         [clientId] : status
                     };
+                    await BaseController.updateOne(Device, {deviceId: clientId}, {status: status});
                     emitStatusSocket(userId, data);
                     await LogStatusDevice.create({
                         deviceId: clientId,

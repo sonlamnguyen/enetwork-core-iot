@@ -1,6 +1,8 @@
 const Response = require('../libs/response');
 const Utils = require('../libs/utils');
 
+const DeviceService = require('../services/deviceService');
+
 const Device = require('../models/deviceModel');
 const SubDevice = require('../models/subDeviceModel');
 const User = require('../models/userModel'); 
@@ -11,12 +13,12 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
-            console.log(req.user);
             const {status, data, error} = await BaseController.list(Device, req.query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
-                return Response.success(res, data);
+                const responseData = await DeviceService.processStatusDevices(data);
+                return Response.success(res, responseData);
             }
         } catch(error) {
             return Response.error(res, 500, error);
@@ -25,11 +27,15 @@ module.exports = {
 
     async getById(req, res) {
         try {
-            const {status, data, error} = await BaseController.getById(Device, req.params.id);
+            const query = {
+                deviceId: req.params.id
+            };
+            const {status, data, error} = await BaseController.getOne(Device, query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
-                return Response.success(res, data);
+                const responseData = await DeviceService.processStatusDevice(data);
+                return Response.success(res, responseData);
             }
         } catch(error) {
             return Response.error(res, 500, error);
