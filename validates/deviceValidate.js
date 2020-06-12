@@ -18,12 +18,15 @@ module.exports.add = [
         .withMessage('type is not number'),
     check('inputs')
         .isNumeric()
+        .isLength({ max: 48 })
         .withMessage('inputs is not number'),
     check('outputs')
         .isNumeric()
+        .isLength({ max: 48 })
         .withMessage('outputs is not number'),
     check('analogs')
         .isNumeric()
+        .isLength({ max: 10 })
         .withMessage('analogs is not number'),
     check('status')
         .isBoolean()

@@ -20,7 +20,12 @@ module.exports = {
                         [clientId] : status
                     };
                     await BaseController.updateOne(Device, {deviceId: clientId}, {status: status});
-                    emitStatusSocket(userId, data);
+                    const dataSocket = {
+                        userId: userId,
+                        deviceId: clientId,
+                        status: status
+                    };
+                    emitStatusSocket(userId, dataSocket);
                     await LogStatusDevice.create({
                         deviceId: clientId,
                         status: status
