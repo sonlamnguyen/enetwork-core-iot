@@ -11,7 +11,6 @@ module.exports = {
             try {
                 const dataInsert = payload;
                 delete dataInsert['maLenh'];
-                console.log(dataInsert);
                 await DeviceStatusService.processDeviceStatus(dataInsert);
                 await ReportRawDevice.create(dataInsert);
                 resolve(true);

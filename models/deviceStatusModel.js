@@ -1,5 +1,17 @@
 const mongoose = require('mongoose');
 
+
+const statusSubDevice = mongoose.Schema({ 
+        channelId: {
+            type: Number,
+            require: true
+        }, 
+        value: {
+            type: Number,
+            require: true
+        }
+}, { _id : false });
+
 const deviceStatusSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -13,96 +25,9 @@ const deviceStatusSchema = new mongoose.Schema({
         type: Number,
         required: true,
     }, 
-    inputs: [{ 
-        type: {
-            type: String,
-            require: true
-        },
-        channelId: {
-            type: String,
-            require: true
-        }, 
-        value: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        minute: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        second: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        status: {
-            type: String,
-            require: true,
-            default: '1'
-        }
-    }],
-    outputs: [{ 
-        type: {
-            type: String,
-            require: true
-        },
-        channelId: {
-            type: String,
-            require: true
-        }, 
-        value: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        minute: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        second: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        status: {
-            type: String,
-            require: true,
-            default: '1'
-        }
-    }],
-    analogs: [{ 
-        type: {
-            type: String,
-            require: true
-        },
-        channelId: {
-            type: String,
-            require: true
-        }, 
-        value: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        minute: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        second: {
-            type: Number,
-            require: true,
-            default: 0
-        },
-        status: {
-            type: String,
-            require: true,
-            default: '1'
-        }
-    }],
+    inputs: [statusSubDevice],
+    outputs: [statusSubDevice],
+    analogs: [statusSubDevice],
     status: {
         type: Boolean
     },

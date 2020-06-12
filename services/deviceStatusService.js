@@ -1,7 +1,10 @@
+const _ = require('lodash');
 var Promise = require('promise');
 const Utils = require('../libs/utils');
+const {emitStatusSocket} = require('../libs/redisSocket');
 
 const Device = require('../models/deviceModel');
+const DeviceStatus = require('../models/deviceStatusModel');
 const User = require('../models/userModel'); 
 
 
@@ -14,18 +17,18 @@ const processInputs = (deviceConfig, data) => {
             const statusBinArr2 = Utils.convertDecToBinArray(data['input2']);
             const statusBinArr3 = Utils.convertDecToBinArray(data['input3']);
             for(let input of inputs) {
-                let status;
-                const channelId = input.channelId;
+                let value;
+                const channelId = parseInt(input.channelId);
                 if (channelId <= 16) {
-                    status = statusBinArr1[16 - channelId];
+                    value = statusBinArr1[16 - channelId];
                 } else if((channelId > 16) && (channelId <= 32)) {
-                    status = statusBinArr2[32 - channelId];
+                    value = statusBinArr2[32 - channelId];
                 } else if((channelId > 32) && (channelId <= 48)) {
-                    status = statusBinArr3[48 - channelId];
+                    value = statusBinArr3[48 - channelId];
                 }
                 const statusInput = {
                     channelId: channelId,
-                    status: status
+                    value: value
                 };
                 statusInputs.push(statusInput);
             }
@@ -41,22 +44,40 @@ const processOutputs = (deviceConfig, data) => {
         try {
             const statusOutputs = [];
             const outputs = deviceConfig['outputs'];
-            const statusBinArr1 = Utils.convertDecToBinArray(data['output1']);
-            const statusBinArr2 = Utils.convertDecToBinArray(data['output2']);
-            const statusBinArr3 = Utils.convertDecToBinArray(data['output3']);
+            const outputBinArr1 = Utils.convertDecToBinArray(data['output1']);
+            const outputBinArr2 = Utils.convertDecToBinArray(data['output2']);
+            const outputBinArr3 = Utils.convertDecToBinArray(data['output3']);
+            const warningBinArr1 = Utils.convertDecToBinArray(data['warning1']);
+            const warningBinArr2 = Utils.convertDecToBinArray(data['warning2']);
+            const warningBinArr3 = Utils.convertDecToBinArray(data['warning3']);
             for(let output of outputs) {
-                let status;
-                const channelId = output.channelId;
+                let value;
+                const channelId = parseInt(output.channelId);
+                // if warning = 1 => value = 2
+                // if warning = 0 => value = output
                 if (channelId <= 16) {
-                    status = statusBinArr1[16 - channelId];
+                    if (parseInt(warningBinArr1[16 - channelId]) === 1) {
+                        value = 2;
+                    } else {
+                        value = parseInt(outputBinArr1[16 - channelId]);
+                    }
+                    
                 } else if((channelId > 16) && (channelId <= 32)) {
-                    status = statusBinArr2[32 - channelId];
+                    if (parseInt(warningBinArr2[32 - channelId]) === 1) {
+                        value = 2;
+                    } else {
+                        value = parseInt(outputBinArr2[32 - channelId]);
+                    }
                 } else if((channelId > 32) && (channelId <= 48)) {
-                    status = statusBinArr3[48 - channelId];
+                    if (parseInt(warningBinArr3[48 - channelId]) === 1) {
+                        value = 2;
+                    } else {
+                        value = parseInt(outputBinArr3[48 - channelId]);
+                    }
                 }
                 const statusOutput = {
                     channelId: channelId,
-                    status: status
+                    value: value
                 };
                 statusOutputs.push(statusOutput);
             }
@@ -67,15 +88,24 @@ const processOutputs = (deviceConfig, data) => {
     });
 }
 
-const processWarnings = () => {
-    return new Promise(function(resolve, reject) {
-        
-    });
-}
 
-const processBackups = () => {
+const processAnalogs = (deviceConfig, data) => {
     return new Promise(function(resolve, reject) {
-        
+        try {
+            const statusAnalogs = [];
+            const analogs = deviceConfig['analogs'];
+            for(let analog of analogs) {
+                const channelId = parseInt(analog.channelId);
+                const statusAnalog = {
+                    channelId: channelId,
+                    value: parseInt(data['backup' + channelId])
+                };
+                statusAnalogs.push(statusAnalog);
+            }
+            resolve(statusAnalogs);
+        } catch(error) {
+            resolve(false);
+        }
     });
 }
 
@@ -90,9 +120,31 @@ module.exports.processDeviceStatus = (data) => {
 
             const statusInputs = await processInputs(deviceConfig, data);
             const statusOutputs = await processOutputs(deviceConfig, data);
-            console.log(statusOutputs);
-            resolve(true);
+            const statusAnalogs = await processAnalogs(deviceConfig, data);
+            
+            if(!(statusInputs || statusOutputs || statusAnalogs)) {
+                resolve(false);
+            }
+            const deviceStatusData = {
+                userId: deviceConfig.userId,
+                deviceId: deviceConfig.deviceId,
+                type: deviceConfig.type,
+                inputs: statusInputs,
+                outputs: statusOutputs,
+                analogs: statusAnalogs,
+                status: true
+            };
 
+            let deviceStatusInsert;
+            let oldDeviceStatus = await DeviceStatus.findOne({deviceId: deviceConfig.deviceId});
+            if(!oldDeviceStatus) {
+                deviceStatusInsert = await DeviceStatus.create(deviceStatusData);
+            } else {
+                const migrateData =  _.merge(oldDeviceStatus, deviceStatusData);
+                deviceStatusInsert = await migrateData.save();
+            }
+            emitStatusSocket(deviceConfig.userId, deviceStatusInsert);
+            resolve(true);
         } catch(error) {
             reject(false);
         }
