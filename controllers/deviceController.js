@@ -1,10 +1,11 @@
+const ObjectId = require('mongodb').ObjectId; 
+
 const Response = require('../libs/response');
 const Utils = require('../libs/utils');
 
 const DeviceService = require('../services/deviceService');
 
 const Device = require('../models/deviceModel');
-const SubDevice = require('../models/subDeviceModel');
 const User = require('../models/userModel'); 
 
 const BaseController = require('./baseController');
@@ -49,25 +50,26 @@ module.exports = {
             };
             if(!req.body['userId']) {
                 req.body['userId'] = req.user._id;
+            } else {
+                const user = await User.findOne({_id: new ObjectId(req.body['userId'])});
+                if (!user) {
+                    return Response.error(res, 500, 'User Id not found on system!!');
+                }
             }
-            const {status, data, error} = await BaseController.addNotExist(Device, query, req.body);
+            const dataInsert = req.body;
+            dataInsert['inputs'] = await Utils.genSubDevices('input', dataInsert['inputs']);
+            dataInsert['outputs']= await Utils.genSubDevices('output', dataInsert['outputs']);
+            dataInsert['analogs'] = await Utils.genSubDevices('analog', dataInsert['analogs']);
+            console.log(dataInsert['inputs']);
+            const {status, data, error} = await BaseController.addNotExist(Device, query, dataInsert);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
-                const result = await Utils.generateSubDevice(data);
-                if (result.status) {
-                    const resultSubDevices = await BaseController.addMany(SubDevice, result.subDevices);
-                    if (resultSubDevices.status) {
-                        return Response.success(res, data);
-                    } else {
-                        return Response.error(res, 500, resultSubDevices.error);
-                    }
-                } else {
-                    return Response.error(res, 500, result.error);
-                }  
+                return Response.success(res, data);
             }
         } catch(error) {
-            return Response.error(res, 500, error);
+            console.log(error);
+            return Response.error(res, 500, error.message);
         }
     },
 

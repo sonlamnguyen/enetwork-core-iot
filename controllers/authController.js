@@ -15,6 +15,7 @@ const createToken = id => {
 module.exports = {
     async login(req, res, next) {
         try {
+            console.log(req.body);
             const user = await User.findOne({
                 $or: [{
                     userName: req.body.author
@@ -92,6 +93,7 @@ module.exports = {
                 token = req.headers.authorization.split(' ')[1];
             }
 
+            console.log(token);
             if (!token) {
                 return Response.error(res, 500, 'You are not logged in! Please login in to continue');
             }

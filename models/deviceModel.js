@@ -18,18 +18,87 @@ const deviceSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    inputs: {
-        type: Number,
-        required: true
-    },
-    outputs: {
-        type: Number,
-        required: true
-    },
-    analogs: {
-        type: Number,
-        required: true
-    },
+    inputs: [{
+        channelId: {
+            type: Number,
+            required: [true, 'Please fill your channelId'],
+        },
+        name: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        flows: {
+            type: String,
+            required: false
+        },
+        capacity: {
+            type: String,
+            required: false
+        },
+        status: {
+            type: Boolean,
+            default: true
+        }
+    }],
+    outputs: [{
+        channelId: {
+            type: Number,
+            required: [true, 'Please fill your channelId'],
+        },
+        name: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        flows: {
+            type: String,
+            required: false
+        },
+        capacity: {
+            type: String,
+            required: false
+        },
+        status: {
+            type: Boolean,
+            default: true
+        }
+    }],
+    analogs: [{
+        channelId: {
+            type: Number,
+            required: [true, 'Please fill your channelId'],
+        },
+        name: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        flows: {
+            type: String,
+            required: false
+        },
+        capacity: {
+            type: String,
+            required: false
+        },
+        status: {
+            type: Boolean,
+            default: true
+        }
+    }],
     status: {
         type: Boolean,
         default: true

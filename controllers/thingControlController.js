@@ -7,7 +7,6 @@ const {emitStatusSocket} = require('../libs/redisSocket');
 const ThingService = require('../services/thingService');
 
 const Device = require('../models/deviceModel');
-const SubDevice = require('../models/subDeviceModel');
 
 const BaseController = require('./baseController');
 

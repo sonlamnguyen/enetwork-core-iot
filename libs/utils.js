@@ -9,61 +9,53 @@ module.exports.getQueryAuthen = (req, query) => {
     return query;
 };
 
-module.exports.generateSubDevice = (device) => {
+module.exports.genSubDevices = (type, numberSubDevice) => {
+    const subDevices = [];
     return new Promise(async function(resolve, reject) {
         try {
-            const subDevices = [];
-            for (let input = 1; input <= parseInt(device['inputs']); input++) {
+            for (let channel = 1; channel <= parseInt(numberSubDevice); channel++) {
                 const subDevice = {
-                    userId: device['userId'],
-                    deviceId: device['deviceId'],
-                    channelId: input,
-                    name: 'input_device_' + input,
-                    type: 'input',
+                    channelId: channel,
+                    name: type  + '_device_' + channel,
+                    type: type,
                     flows: '',
                     capacity: '',
                     status: true
                 };
                 subDevices.push(subDevice);
             }
-
-            for (let output = 1; output <= parseInt(device['outputs']); output++) {
-                const subDevice = {
-                    userId: device['userId'],
-                    deviceId: device['deviceId'],
-                    channelId: output,
-                    name: 'output_device_' + output,
-                    type: 'output',
-                    flows: '',
-                    capacity: '',
-                    status: true
-                };
-                subDevices.push(subDevice);
-            }
-
-            for (let analog = 1; analog <= parseInt(device['analogs']); analog++) {
-                const subDevice = {
-                    userId: device['userId'],
-                    deviceId: device['deviceId'],
-                    channelId: analog,
-                    name: 'analog_device_' + analog,
-                    type: 'analog',
-                    flows: '',
-                    capacity: '',
-                    status: true
-                };
-                subDevices.push(subDevice);
-            }
-            resolve({
-                status: true,
-                subDevices
-            });
+            resolve(subDevices);
         } catch(error) {
             console.log(error);
-            resolve({
-                status: false,
-                error: error.message
-            });
+            resolve(subDevices);
         }
     });
-};
+}
+
+
+module.exports.convertDecToBin = (number) => {
+    let binary = "";
+    let temp = number;
+    while(temp > 0){
+        if(temp % 2 == 0){
+            binary = "0" + binary;
+        }
+        else {
+            binary = "1" + binary;
+        }
+        temp = Math.floor(temp / 2);
+    }
+    return binary;
+}
+
+module.exports.convertBinToDec = (binaryNumber) => {
+    let total = 0;
+    for(let i = 0; i < binaryNumber.length; i++){
+        const bit = binaryNumber.charAt(binaryNumber.length - (i + 1 ));
+        if(bit == 1){
+            const temp = Math.pow(2, i* parseInt(bit));
+            total += temp;
+        }
+    }
+    return total;
+}

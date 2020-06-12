@@ -120,6 +120,7 @@ module.exports.update = [
         .withMessage('Role is not string'), 
     (req, res, next) => {
         const errors = validationResult(req);
+        console.log(errors);
         if (!errors.isEmpty()) {
             return Reponses.error(res, 401, errors.array()[0]['msg']);
         }
@@ -133,6 +134,7 @@ module.exports.delete = [
         .withMessage('Id is not string'),
     (req, res, next) => {
         const errors = validationResult(req);
+        console.log(errors);
         if (!errors.isEmpty()) {
             return Reponses.error(res, 401, errors.array()[0]['msg']);
         }
