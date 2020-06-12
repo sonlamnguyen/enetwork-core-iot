@@ -11,12 +11,15 @@ module.exports = {
         console.log('####################### Process Rule ######################');
         try {
             const body = req.body;
-            console.log(body);
+            // console.log(body);
             const event = (body && body['event']) ? body['event'] : null;
             if (event) {         
                 if (EVENT.PUBLISH == event) {
-                    const payload = JSON.parse(req.body['payload']);
+                    // const payload = JSON.parse(req.body['payload']);
+                    const payload = req.body['payload']; // call postman
+                    console.log(req.body['payload']);
                     if (payload && payload.maLenh) {
+                        console.log(payload.maLenh);
                         switch(payload.maLenh) {
                             case command.DINH_KY:
                                 console.log('dinh ky');

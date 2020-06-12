@@ -33,10 +33,10 @@ module.exports.genSubDevices = (type, numberSubDevice) => {
 }
 
 
-module.exports.convertDecToBin = (number) => {
+module.exports.convertDecToBinArray = (number, numberBits = 16) => {
     let binary = "";
-    let temp = number;
-    while(temp > 0){
+    let temp = parseInt(number);
+    for(let i = 0; i < numberBits; i++) {
         if(temp % 2 == 0){
             binary = "0" + binary;
         }
@@ -45,7 +45,7 @@ module.exports.convertDecToBin = (number) => {
         }
         temp = Math.floor(temp / 2);
     }
-    return binary;
+    return binary.split("");
 }
 
 module.exports.convertBinToDec = (binaryNumber) => {

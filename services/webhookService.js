@@ -1,5 +1,8 @@
 const _ = require('lodash');
 const EmqxHelper = require('../libs/emqxHelper');
+
+const DeviceStatusService = require('../services/deviceStatusService');
+
 const ReportRawDevice = require('../models/reportRawDeviceModel');
 
 module.exports = {
@@ -9,6 +12,7 @@ module.exports = {
                 const dataInsert = payload;
                 delete dataInsert['maLenh'];
                 console.log(dataInsert);
+                await DeviceStatusService.processDeviceStatus(dataInsert);
                 await ReportRawDevice.create(dataInsert);
                 resolve(true);
             } catch(error) {
