@@ -1,5 +1,33 @@
 const mongoose = require('mongoose');
 
+const subDevice = mongoose.Schema({ 
+    channelId: {
+        type: Number,
+        required: [true, 'Please fill your channelId'],
+    },
+    name: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    type: {
+        type: String,
+        required: true,
+    },
+    flows: {
+        type: String,
+        required: false
+    },
+    capacity: {
+        type: String,
+        required: false
+    },
+    status: {
+        type: Boolean,
+        default: true
+    }
+}, { _id : false });
+
 const deviceSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -18,87 +46,9 @@ const deviceSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    inputs: [{
-        channelId: {
-            type: Number,
-            required: [true, 'Please fill your channelId'],
-        },
-        name: {
-            type: String,
-            required: false,
-            default: ''
-        },
-        type: {
-            type: String,
-            required: true,
-        },
-        flows: {
-            type: String,
-            required: false
-        },
-        capacity: {
-            type: String,
-            required: false
-        },
-        status: {
-            type: Boolean,
-            default: true
-        }
-    }],
-    outputs: [{
-        channelId: {
-            type: Number,
-            required: [true, 'Please fill your channelId'],
-        },
-        name: {
-            type: String,
-            required: false,
-            default: ''
-        },
-        type: {
-            type: String,
-            required: true,
-        },
-        flows: {
-            type: String,
-            required: false
-        },
-        capacity: {
-            type: String,
-            required: false
-        },
-        status: {
-            type: Boolean,
-            default: true
-        }
-    }],
-    analogs: [{
-        channelId: {
-            type: Number,
-            required: [true, 'Please fill your channelId'],
-        },
-        name: {
-            type: String,
-            required: false,
-            default: ''
-        },
-        type: {
-            type: String,
-            required: true,
-        },
-        flows: {
-            type: String,
-            required: false
-        },
-        capacity: {
-            type: String,
-            required: false
-        },
-        status: {
-            type: Boolean,
-            default: true
-        }
-    }],
+    inputs: [subDevice],
+    outputs: [subDevice],
+    analogs: [subDevice],
     status: {
         type: Boolean,
         default: true

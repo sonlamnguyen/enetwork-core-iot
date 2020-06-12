@@ -28,7 +28,7 @@ const processInputs = (deviceConfig, data) => {
                 }
                 const statusInput = {
                     channelId: channelId,
-                    value: value
+                    value: parseInt(value)
                 };
                 statusInputs.push(statusInput);
             }
