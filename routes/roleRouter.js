@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
+const roleValidate = require('../validates/roleValidate');
 
 const roleController = require('../controllers/roleController');
 const authController = require('../controllers/authController');
@@ -10,7 +11,7 @@ const authController = require('../controllers/authController');
 router.use(authController.authenticaion, authController.checkPermission);
 
 
-router.get('/', roleController.list);
+router.get('/',  roleController.list);
 router.get('/:id',  roleController.getById);
 router.post('/', roleController.add);
 router.put('/:id', roleController.update);

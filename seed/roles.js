@@ -4,9 +4,9 @@ module.exports = [
         code: 'admin',
 		permissions:{
 			GET: ['/users', '/users/:id', '/roles', '/roles/:id'],
-			POST: ['/users'],
-			PUT: ['/users/:id'],
-			DELETE: ['/users/:id']
+			POST: ['/users', '/roles'],
+			PUT: ['/users/:id', '/roles/:id'],
+			DELETE: ['/users/:id', '/roles/:id']
 		},
 		status: true
 	},

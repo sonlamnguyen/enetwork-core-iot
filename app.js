@@ -9,14 +9,7 @@ const morgan = require('morgan');
 
 const io = require('./libs/redisSocket');
 
-
-const authenRouter = require('./routes/authenRouter');
-const userRouter = require('./routes/userRouter');
-const roleRouter = require('./routes/roleRouter');
-const devicesRouter = require('./routes/deviceRouter');
-
-const thingControlRouter = require('./routes/thingControlRouter');
-const webhookRouter = require('./routes/webhookRouter');
+const indexRouter = require('./routes/indexRouter');
 const Response = require('./libs/response');
 const app = express();
 
@@ -54,13 +47,8 @@ app.use(express.json({
 
 
 // Routes
-app.use(process.env.BASE_URL_API + '/authen', authenRouter);
-app.use(process.env.BASE_URL_API + '/users', userRouter);
-app.use(process.env.BASE_URL_API + '/devices', devicesRouter);
-app.use(process.env.BASE_URL_API + '/roles', roleRouter);
 
-app.use(process.env.BASE_URL_API + '/things', thingControlRouter);
-app.use(process.env.BASE_URL_API + '/mqtt', webhookRouter);
+app.use(process.env.BASE_URL_API, indexRouter);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {
