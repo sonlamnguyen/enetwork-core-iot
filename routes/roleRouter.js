@@ -11,11 +11,11 @@ const authController = require('../controllers/authController');
 router.use(authController.authenticaion, authController.checkPermission);
 
 
-router.get('/',  roleController.list);
-router.get('/:id',  roleController.getById);
-router.post('/', roleController.add);
-router.put('/:id', roleController.update);
-router.delete('/:id', roleController.delete);
+router.get('/', roleValidate.list, roleController.list);
+router.get('/:id', roleValidate.getById, roleController.getById);
+router.post('/', roleValidate.add, roleController.add);
+router.put('/:id', roleValidate.update, roleController.update);
+router.delete('/:id', roleValidate.delete, roleController.delete);
 
 module.exports = router;
 
