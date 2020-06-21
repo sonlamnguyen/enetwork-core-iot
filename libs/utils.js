@@ -1,6 +1,38 @@
 'use strict';
+const _ = require('lodash');
 const Promise = require('promise');
+const Response = require('./response');
 
+const Permissions = require('../models/permissionModel');
+const Roles = require('../models/roleModel');
+
+const PermissionsData = require('../seed/permissions');
+const RoleData = require('../seed/roles');
+
+module.exports.seedData = () => {
+    Permissions.find({}).then((result) => {
+        if (_.isEmpty(result)) {
+            const permissions = PermissionsData;
+            Permissions.insertMany(permissions).then((result) => {
+                console.log("Seed Permission Successfully!!!");
+            }).catch((err) => {
+                return err;
+            })
+        }
+    });
+
+    Roles.find({}).then((result) => {
+        if (_.isEmpty(result)) {
+            const roles = RoleData;
+            Roles.insertMany(roles).then((result) => {
+                console.log('Seed Roles Successfully!!!');
+            }).catch((err) => {
+                console.log(err);
+                return err;
+            })
+        }
+    });
+}
 
 module.exports.getQueryAuthen = (req, query) => {
     if (req.user.role != 'admin') {
@@ -58,4 +90,15 @@ module.exports.convertBinToDec = (binaryNumber) => {
         }
     }
     return total;
+}
+
+module.exports.checkPermissionDetail = (req, res, next) => {
+    let path = req.baseUrl;
+    path = path.replace(process.env.BASE_URL_API, '');
+    let pers = _.includes(req.dataPermissions, path);
+    if(req.dataPermissions && pers) {
+      return next();
+    } else {
+      return Response.error(res, 403, 'Unauthorized access');
+    }
 }

@@ -14,11 +14,11 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
-            const bin = Utils.convertDecToBin(3555);
             const {status, data, error} = await BaseController.list(Device, req.query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
+                console.log(data);
                 const responseData = await DeviceService.processStatusDevices(data);
                 return Response.success(res, responseData);
             }

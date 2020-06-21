@@ -9,6 +9,7 @@ process.on('uncaughtException', err => {
 });
 
 const app = require('./app');
+const Utils = require('./libs/utils');
 
 const database = process.env.DATABASE;
 
@@ -19,6 +20,7 @@ mongoose.connect(database, {
     useFindAndModify: false
 }).then(con => {
     console.log('DB connection Successfully!');
+    Utils.seedData();
 });
 
 // Start the server

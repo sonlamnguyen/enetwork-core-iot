@@ -1,7 +1,11 @@
+const _ = require('lodash');
 const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
+
+const Utils = require('../libs/utils');
 const Response = require('../libs/response');
 const User = require('../models/userModel');
+const Roles = require('../models/roleModel');
 
 
 const createToken = id => {
@@ -15,7 +19,6 @@ const createToken = id => {
 module.exports = {
     async login(req, res, next) {
         try {
-            console.log(req.body);
             const user = await User.findOne({
                 $or: [{
                     userName: req.body.author
@@ -111,6 +114,30 @@ module.exports = {
         } catch (err) {
             console.log(err);
             return Response.error(res, 500, 'Please login before call API');
+        }
+    },
+
+    async checkPermission(req, res, next) {
+        try {
+            const role = await Roles.findOne({
+                code: req.user.role
+            });
+            console.log(role.permissions[req.method]);
+
+            if(role) {
+                let path = req.baseUrl;
+                path = path.replace(process.env.BASE_URL_API, '');
+                let pers = _.includes(role.permissions[req.method], path);
+                if(role.permissions && pers) {
+                    return next();
+                } else {
+                    return Response.error(res, 403, 'Unauthorized access');
+                }
+            } else {
+                return Response.error(res, 403, 'Unauthorized access');
+            }
+        } catch(error) {
+            return Response.error(res, 403, 'Unauthorized access');
         }
     }
 };

@@ -53,11 +53,11 @@ app.use(express.json({
 
 
 // Routes
-app.use('/api/v1/authen', authenRouter);
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/devices', devicesRouter);
-app.use('/api/v1/things', thingControlRouter);
-app.use('/api/v1/mqtt', webhookRouter);
+app.use(process.env.BASE_URL_API + '/authen', authenRouter);
+app.use(process.env.BASE_URL_API + '/users', userRouter);
+app.use(process.env.BASE_URL_API + '/devices', devicesRouter);
+app.use(process.env.BASE_URL_API + '/things', thingControlRouter);
+app.use(process.env.BASE_URL_API + '/mqtt', webhookRouter);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {

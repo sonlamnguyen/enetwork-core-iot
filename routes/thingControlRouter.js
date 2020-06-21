@@ -6,7 +6,7 @@ const authController = require('../controllers/authController');
 const thingControlController = require('../controllers/thingControlController');
 
 // Protect all routes after this middleware
-router.use(authController.authenticaion);
+router.use(authController.authenticaion, authController.checkPermission);
 
 router.post('/control', thingControlController.control);
 router.post('/config', thingControlController.config);

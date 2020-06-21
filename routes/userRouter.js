@@ -8,7 +8,9 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
 // Protect all routes after this middleware
-router.use(authController.authenticaion);
+router.use(authController.authenticaion, authController.checkPermission);
+
+
 router.get('/', userValidate.list, userController.list);
 router.get('/:id', userValidate.getById, userController.getById);
 // router.post('/', userValidate.add, userController.add);
