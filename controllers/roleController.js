@@ -1,6 +1,6 @@
 const Response = require('../libs/response');
 
-const User = require('../models/userModel');
+const Roles = require('../models/roleModel');
 
 const BaseController = require('./baseController');
 
@@ -8,7 +8,7 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
-            const {status, data, error} = await BaseController.list(User, req.query, req);
+            const {status, data, error} = await BaseController.list(Roles, req.query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
@@ -21,7 +21,7 @@ module.exports = {
 
     async getById(req, res) {
         try {
-            const {status, data, error} = await BaseController.getById(User, req.params.id);
+            const {status, data, error} = await BaseController.getById(Roles, req.params.id);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
@@ -34,22 +34,12 @@ module.exports = {
 
     async add(req, res) {
         try {
-            if (req.body.password !== req.body.confirmPassword) {
-                return Response.error(res, 400, 'Password and confirm password not macthed!!!');
+            const dataInsert = req.body;
+            const {status, data, error} = await BaseController.addNotExist(Roles, {code: dataInsert.code}, dataInsert);
+            if (!status) {
+                return Response.error(res, 500, error);
             } else {
-                const query = {
-                    $or: [{
-                        userName: req.body.userName
-                    }, {
-                        email: req.body.email
-                    }]
-                };
-                const {status, data, error} = await BaseController.addNotExist(User, query, req.body);
-                if (!status) {
-                    return Response.error(res, 500, error);
-                } else {
-                    return Response.success(res, data);
-                }
+                return Response.success(res, data);
             }
         } catch(error) {
             console.log(error);
@@ -63,10 +53,7 @@ module.exports = {
                 '_id' : req.params.id
             };
             const dataUpdate = req.body;
-            delete dataUpdate['userName'];
-            delete dataUpdate['email'];
-            delete dataUpdate['password'];
-            const {status, data, error} = await BaseController.updateOne(User, query, dataUpdate);
+            const {status, data, error} = await BaseController.updateOne(Roles, query, dataUpdate);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
@@ -79,7 +66,7 @@ module.exports = {
     },
     async delete(req, res) {
         try {
-            const {status, data, error} = await BaseController.delete(User, req.params.id);
+            const {status, data, error} = await BaseController.delete(Roles, req.params.id);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
