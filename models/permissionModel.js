@@ -5,12 +5,8 @@ const PermissionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  type: {
-    type: String,
-    required: true
-  },
-  path: {
-    type: [String],
+  data: {
+    type: Object,
     required: true
   },
   date: {

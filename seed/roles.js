@@ -3,7 +3,10 @@ module.exports = [
 		name: 'Admin',
         code: 'admin',
 		permissions:{
-			GET: ['/users', '/users/:id']
+			GET: ['/users', '/users/:id', '/roles', '/roles/:id'],
+			POST: ['/users'],
+			PUT: ['/users/:id'],
+			DELETE: ['/users/:id']
 		},
 		status: true
 	},

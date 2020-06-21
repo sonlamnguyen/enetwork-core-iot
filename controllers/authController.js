@@ -96,7 +96,7 @@ module.exports = {
                 token = req.headers.authorization.split(' ')[1];
             }
 
-            console.log(token);
+            // console.log(token);
             if (!token) {
                 return Response.error(res, 500, 'You are not logged in! Please login in to continue');
             }
@@ -122,11 +122,12 @@ module.exports = {
             const role = await Roles.findOne({
                 code: req.user.role
             });
-            console.log(role.permissions[req.method]);
-
             if(role) {
                 let path = req.baseUrl;
                 path = path.replace(process.env.BASE_URL_API, '');
+                if(req.path.replace('/', '')) {
+                    path = path + '/:id';
+                }
                 let pers = _.includes(role.permissions[req.method], path);
                 if(role.permissions && pers) {
                     return next();

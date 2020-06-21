@@ -1,7 +1,10 @@
 module.exports = [
 	{
 		name: 'User',
-		type: 'GET',
-		path: ['/users', '/users/:id']
+		data: {
+			GET: ['/users', '/users/:id'],
+			POST: ['/users'],
+			PUT: ['/users/:id']
+		}
 	},
 ];
