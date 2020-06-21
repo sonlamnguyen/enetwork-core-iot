@@ -13,10 +13,6 @@ const statusSubDevice = mongoose.Schema({
 }, { _id : false });
 
 const deviceStatusSchema = new mongoose.Schema({
-    userId: {
-        type: String,
-        required: [true, 'Please fill your userId'],
-    },
     deviceId: {
         type: String,
         required: [true, 'Please fill your deviceId'],

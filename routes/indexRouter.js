@@ -6,6 +6,7 @@ const userRouter = require('./userRouter');
 const roleRouter = require('./roleRouter');
 const permissionRouter = require('./permissionRouter');
 const devicesRouter = require('./deviceRouter');
+const deviceUserRouter = require('./deviceUserRouter');
 
 const thingControlRouter = require('./thingControlRouter');
 const webhookRouter = require('./webhookRouter');
@@ -13,6 +14,7 @@ const webhookRouter = require('./webhookRouter');
 router.use('/authen', authenRouter);
 router.use('/users', userRouter);
 router.use('/devices', devicesRouter);
+router.use('/device-users', deviceUserRouter);
 router.use('/roles', roleRouter);
 router.use('/permissions', permissionRouter);
 

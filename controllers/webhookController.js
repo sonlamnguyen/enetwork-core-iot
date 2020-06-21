@@ -14,8 +14,8 @@ module.exports = {
             const event = (body && body['event']) ? body['event'] : null;
             if (event) {         
                 if (EVENT.PUBLISH == event) {
-                    const payload = JSON.parse(req.body['payload']);
-                    // const payload = req.body['payload']; // call postman
+                    //const payload = JSON.parse(req.body['payload']);
+                    const payload = req.body['payload']; // call postman
                     if (payload && payload.maLenh) {
                         console.log(payload.maLenh);
                         switch(payload.maLenh) {

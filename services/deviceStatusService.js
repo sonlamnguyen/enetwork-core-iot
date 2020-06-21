@@ -5,6 +5,7 @@ const {emitStatusSocket} = require('../libs/redisSocket');
 
 const Device = require('../models/deviceModel');
 const DeviceStatus = require('../models/deviceStatusModel');
+const DeviceUser = require('../models/deviceUserModel');
 const User = require('../models/userModel'); 
 
 
@@ -126,7 +127,6 @@ module.exports.processDeviceStatus = (data) => {
                 resolve(false);
             }
             const deviceStatusData = {
-                userId: deviceConfig.userId,
                 deviceId: deviceConfig.deviceId,
                 type: deviceConfig.type,
                 inputs: statusInputs,
@@ -143,7 +143,20 @@ module.exports.processDeviceStatus = (data) => {
                 const migrateData =  _.merge(oldDeviceStatus, deviceStatusData);
                 deviceStatusInsert = await migrateData.save();
             }
-            emitStatusSocket(deviceConfig.userId, deviceStatusInsert);
+            // send admin
+            const user = await User.findOne({role: 'admin'});
+            emitStatusSocket(user._id, deviceStatusInsert);
+
+            // send user share device
+            const deviceUser = await DeviceUser.findOne({deviceId: deviceStatusData.deviceId});
+            if (!deviceUser) {
+                console.log('Device User not found');
+                resolve(false);
+            }
+            const userIds = deviceUser.userIds;
+            for(let userId of userIds) {
+                emitStatusSocket(userId, deviceStatusInsert);
+            }
             resolve(true);
         } catch(error) {
             reject(false);

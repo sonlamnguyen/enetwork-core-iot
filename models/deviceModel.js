@@ -29,10 +29,6 @@ const subDevice = mongoose.Schema({
 }, { _id : false });
 
 const deviceSchema = new mongoose.Schema({
-    userId: {
-        type: String,
-        required: [true, 'Please fill your userId']
-    },
     deviceId: {
         type: String,
         required: [true, 'Please fill your deviceId'],

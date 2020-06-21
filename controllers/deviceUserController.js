@@ -5,6 +5,8 @@ const Utils = require('../libs/utils');
 
 const DeviceService = require('../services/deviceService');
 
+const DeviceUser = require('../models/deviceUserModel');
+
 const Device = require('../models/deviceModel');
 const User = require('../models/userModel'); 
 
@@ -14,12 +16,12 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
-            const {status, data, error} = await BaseController.list(Device, req.query, req);
+            const {status, data, error} = await BaseController.list(DeviceUser, req.query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
-                const responseData = await DeviceService.processStatusDevices(data);
-                return Response.success(res, responseData);
+                console.log(data);
+                return Response.success(res, data);
             }
         } catch(error) {
             return Response.error(res, 500, error);
@@ -31,7 +33,7 @@ module.exports = {
             const query = {
                 deviceId: req.params.id
             };
-            const {status, data, error} = await BaseController.getOne(Device, query, req);
+            const {status, data, error} = await BaseController.getOne(DeviceUser, query, req);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
@@ -43,38 +45,34 @@ module.exports = {
         }
     },
 
-    async add(req, res) {
+    async insertOrUpdate(req, res) {
         try {
+            const dataBody = req.body;
             const query = {
-                deviceId: req.body.deviceId
+                deviceId : dataBody.deviceId
             };
-            const dataInsert = req.body;
-            dataInsert['inputs'] = await Utils.genSubDevices('input', dataInsert['inputs']);
-            dataInsert['outputs']= await Utils.genSubDevices('output', dataInsert['outputs']);
-            dataInsert['analogs'] = await Utils.genSubDevices('analog', dataInsert['analogs']);
-            const {status, data, error} = await BaseController.addNotExist(Device, query, dataInsert);
-            if (!status) {
-                return Response.error(res, 500, error);
-            } else {
-                return Response.success(res, data);
+            const device = await Device.findOne(query);
+            if(!device) {
+                return Response.error(res, 500, 'Device is NOT found!!!');
             }
-        } catch(error) {
-            console.log(error);
-            return Response.error(res, 500, error.message);
-        }
-    },
-
-    async update(req, res) {
-        try {
-            const query  = {
-                deviceId : req.params.id
-            };
-            const dataUpdate = req.body;
-            const {status, data, error} = await BaseController.updateOne(Device, query, dataUpdate);
-            if (!status) {
-                return Response.error(res, 500, error);
+            const oldDeviceUser = await DeviceUser.findOne({
+                deviceId : dataBody.deviceId
+            });
+            if (oldDeviceUser) {
+                oldDeviceUser.userIds = dataBody.userIds;
+                const dataSave = await oldDeviceUser.save();
+                if (!dataSave) {
+                    return Response.error(res, 500, 'Update device user is fail!!!');
+                } else {
+                    return Response.success(res, dataSave);
+                }
             } else {
-                return Response.success(res, data);
+                const data = await DeviceUser.create(dataBody);
+                if (data && (data.length < 1)) {
+                    return Response.error(res, 500, 'Add device user is fail!!!');
+                } else {
+                    return Response.success(res, data);
+                }
             }
         } catch(error) {
             return Response.error(res, 500, error);
@@ -83,7 +81,7 @@ module.exports = {
 
     async delete(req, res) {
         try {
-            const {status, data, error} = await BaseController.delete(Device, req.params.id);
+            const {status, data, error} = await BaseController.delete(DeviceUser, req.params.id);
             if (!status) {
                 return Response.error(res, 500, error);
             } else {
