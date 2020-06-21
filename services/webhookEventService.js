@@ -1,11 +1,11 @@
 const _ = require('lodash');
 const EmqxHelper = require('../libs/emqxHelper');
-const Device = require('../models/deviceModel');
 const LogStatusDevice = require('../models/logStatusDevice');
+const Device = require('../models/deviceModel');
 
 const BaseController = require('../controllers/baseController');
 
-const {emitStatusSocket} = require('../libs/redisSocket');
+const {emitStatusSocketByDeviceId} = require('../libs/redisSocket');
 
 module.exports = {
     statusDevice(clientId, status) {
@@ -15,17 +15,12 @@ module.exports = {
                 if (!deviceData) {
                     resolve(false);
                 } else {
-                    const userId = deviceData['userId'];
-                    const data  = {
-                        [clientId] : status
-                    };
                     await BaseController.updateOne(Device, {deviceId: clientId}, {status: status});
                     const dataSocket = {
-                        userId: userId,
                         deviceId: clientId,
                         status: status
                     };
-                    emitStatusSocket(userId, dataSocket);
+                    emitStatusSocketByDeviceId(dataSocket.deviceId, dataSocket);
                     await LogStatusDevice.create({
                         deviceId: clientId,
                         status: status

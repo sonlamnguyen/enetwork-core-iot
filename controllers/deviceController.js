@@ -4,6 +4,7 @@ const Response = require('../libs/response');
 const Utils = require('../libs/utils');
 
 const DeviceService = require('../services/deviceService');
+const DeviceUserService = require('../services/deviceUserService');
 
 const Device = require('../models/deviceModel');
 const User = require('../models/userModel'); 
@@ -14,6 +15,10 @@ const BaseController = require('./baseController');
 module.exports = {
     async list(req, res) {
         try {
+            const deviceIds = await DeviceUserService.getDeviceIdsByUserId(req.user._id);
+            if (req.user.role != 'admin') {
+                req.query['deviceId'] = deviceIds;
+            }
             const {status, data, error} = await BaseController.list(Device, req.query, req);
             if (!status) {
                 return Response.error(res, 500, error);

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 var Promise = require('promise');
 const Utils = require('../libs/utils');
-const {emitStatusSocket} = require('../libs/redisSocket');
+const {emitStatusSocketByDeviceId} = require('../libs/redisSocket');
 
 const Device = require('../models/deviceModel');
 const DeviceStatus = require('../models/deviceStatusModel');
@@ -143,20 +143,7 @@ module.exports.processDeviceStatus = (data) => {
                 const migrateData =  _.merge(oldDeviceStatus, deviceStatusData);
                 deviceStatusInsert = await migrateData.save();
             }
-            // send admin
-            const user = await User.findOne({role: 'admin'});
-            emitStatusSocket(user._id, deviceStatusInsert);
-
-            // send user share device
-            const deviceUser = await DeviceUser.findOne({deviceId: deviceStatusData.deviceId});
-            if (!deviceUser) {
-                console.log('Device User not found');
-                resolve(false);
-            }
-            const userIds = deviceUser.userIds;
-            for(let userId of userIds) {
-                emitStatusSocket(userId, deviceStatusInsert);
-            }
+            await emitStatusSocketByDeviceId(deviceStatusData.deviceId, deviceStatusData);
             resolve(true);
         } catch(error) {
             reject(false);
