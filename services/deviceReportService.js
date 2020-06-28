@@ -135,16 +135,36 @@ const processAnalogs = (deviceConfig, data, dataReportDevice = null) => {
     return new Promise(function(resolve, reject) {
         try {
             const reportAnalogs = [];
+            const oldReportAnalogs = (dataReportDevice && dataReportDevice['analogs']) ? dataReportDevice['analogs'] : [];
             const analogs = deviceConfig['analogs'];
             for(let analog of analogs) {
                 const channelId = parseInt(analog.channelId);
-                const statusAnalog = {
-                    channelId: channelId,
-                    value: parseInt(data['backup' + channelId])
+                const oldAnalogs = _.map(oldReportAnalogs, function(o) {
+                    if (o.channelId === channelId) return o;
+                });
+                const oldAnalog = _.first(_.without(oldAnalogs, undefined));
+                const value = parseInt(data['backup' + channelId]);
+                let reportAnalog = {
+                    type: 'analog',
+                    channelId: channelId, 
+                    value: value,
+                    minute: 0,
+                    second: 0,
+                    status: '1'
                 };
-                statusAnalogs.push(statusAnalog);
+                if (oldAnalog) {
+                    reportAnalog = oldAnalog;
+                    if (channelId <= 6) {
+                        reportAnalog.value = (reportAnalog.value + value) / 2;
+                    } else {
+                        if(value > reportAnalog.value) {
+                            reportAnalog.value = value;
+                        }
+                    }
+                }
+                reportAnalogs.push(reportAnalog);
             }
-            resolve(statusAnalogs);
+            resolve(reportAnalogs);
         } catch(error) {
             resolve(false);
         }
@@ -172,17 +192,18 @@ module.exports.processDeviceReport = (data) => {
             if (deviceReportOld) {
                 deviceReportOld.inputs = await processInputs(deviceConfig, data, deviceReportOld);
                 deviceReportOld.output = await processOutputs(deviceConfig, data, deviceReportOld);
+                deviceReportOld.analogs = await processAnalogs(deviceConfig, data, deviceReportOld);
                 await deviceReportOld.save();
             } else {
                 const reportInputs = await processInputs(deviceConfig, data);
                 const reportOutputs = await processOutputs(deviceConfig, data);
+                const reportAnalogs = await processAnalogs(deviceConfig, data);
                 const newReportDevice = {
                     deviceId: data['deviceId'],
                     inputs: reportInputs,
                     outputs: reportOutputs,
-                    analogs: [],
+                    analogs: reportAnalogs,
                 };
-
                 await DeviceReport.create(newReportDevice);
             }
             resolve(true);
