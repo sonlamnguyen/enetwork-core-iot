@@ -6,7 +6,10 @@ const Utils = require('../libs/utils');
 
 const DeviceService = require('../services/deviceService');
 const DeviceUserService = require('../services/deviceUserService');
+const ReportService = require('../services/reportService');
+
 const ReportDevice = require('../models/reportDeviceModel');
+
 
 const Device = require('../models/deviceModel');
 const User = require('../models/userModel'); 
@@ -23,29 +26,56 @@ module.exports = {
             }
             const startTime = new Date(parseInt(req.query['startTime']));
             const endTime = new Date(parseInt(req.query['endTime']));
-            console.log(startTime);
-            console.log(endTime);
-            const reportInputs = await ReportDevice.aggregate([
-                { 
-                    $match: { 
-                        deviceId: req.query['deviceId'],
-                        created_at: { 
-                            $gte: startTime,
-                            $lte: endTime 
-                        } 
-                    } 
-                }, 
-                { 
-                    $project: { 
-                        deviceId: 1,
-                        inputs: 1,
-                        created_at: 1,
-                        updated_at: 1
-                    } 
-                }
-            ]);
-            console.log(reportInputs);
-            return Response.success(res, reportInputs);
+            const reportInputs = await ReportDevice.find({ 
+                deviceId: req.query['deviceId'],
+                created_at: { 
+                    $gte: startTime,
+                    $lte: endTime 
+                } 
+            }).select({ 
+                deviceId: 1, 
+                inputs: 1 ,
+                created_at: 1,
+                updated_at: 1
+            });
+            if(reportInputs && (reportInputs.length > 0)) {
+                const reponse = await ReportService.processInputs(reportInputs, req.query['deviceId'], req.query['channelId']);
+                return Response.success(res, reponse);
+            } else {
+                return Response.success(res, []);
+            } 
+        } catch(error) {
+            console.log(error);
+            return Response.error(res, 500, error);
+        }
+    },
+
+    async reportOutput(req, res) {
+        try {
+            const deviceIds = await DeviceUserService.getDeviceIdsByUserId(req.user._id);
+            if (req.user.role != 'admin') {
+                req.query['deviceId'] = deviceIds;
+            }
+            const startTime = new Date(parseInt(req.query['startTime']));
+            const endTime = new Date(parseInt(req.query['endTime']));
+            const reportOutputs = await ReportDevice.find({ 
+                deviceId: req.query['deviceId'],
+                created_at: { 
+                    $gte: startTime,
+                    $lte: endTime 
+                } 
+            }).select({ 
+                deviceId: 1, 
+                outputs: 1 ,
+                created_at: 1,
+                updated_at: 1
+            });
+            if(reportOutputs && (reportOutputs.length > 0)) {
+                const reponse = await ReportService.processOutputs(reportOutputs, req.query['deviceId'], req.query['channelId']);
+                return Response.success(res, reponse);
+            } else {
+                return Response.success(res, []);
+            } 
         } catch(error) {
             console.log(error);
             return Response.error(res, 500, error);

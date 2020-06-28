@@ -11,5 +11,6 @@ const authController = require('../controllers/authController');
 router.use(authController.authenticaion);
 
 router.get('/input', reportValidate.reportInput, reportDeviceController.reportInput);
+router.get('/output', reportDeviceController.reportOutput);
 
 module.exports = router;
