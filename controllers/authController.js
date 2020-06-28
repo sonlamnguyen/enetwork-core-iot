@@ -124,6 +124,7 @@ module.exports = {
             });
             if(role) {
                 let path = req.baseUrl;
+                console.log(path);
                 path = path.replace(process.env.BASE_URL_API, '');
                 if(req.path.replace('/', '')) {
                     path = path + '/:id';

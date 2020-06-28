@@ -6,10 +6,18 @@ module.exports = [
 			GET: [	'/users', '/users/:id', 
 					'/roles', '/roles/:id', 
 					'/device-users','/device-users/:id', 
-					'/devices', '/devices/:id'],
-			POST: ['/users', '/roles', '/device-users', '/devices'],
-			PUT: ['/users/:id', '/roles/:id'],
-			DELETE: ['/users/:id', '/roles/:id']
+					'/devices', '/devices/:id',
+					'/report/input/:id', '/report/output/:id'
+				],
+			POST: [
+				'/users', '/roles', '/device-users', '/devices'
+			],
+			PUT: [
+				'/users/:id', '/roles/:id'
+			],
+			DELETE: [
+				'/users/:id', '/roles/:id'
+			]
 		},
 		status: true
 	},

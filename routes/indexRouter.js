@@ -7,6 +7,7 @@ const roleRouter = require('./roleRouter');
 const permissionRouter = require('./permissionRouter');
 const devicesRouter = require('./deviceRouter');
 const deviceUserRouter = require('./deviceUserRouter');
+const reportRouter = require('./reportRouter');
 
 const thingControlRouter = require('./thingControlRouter');
 const webhookRouter = require('./webhookRouter');
@@ -17,6 +18,7 @@ router.use('/devices', devicesRouter);
 router.use('/device-users', deviceUserRouter);
 router.use('/roles', roleRouter);
 router.use('/permissions', permissionRouter);
+router.use('/report', reportRouter);
 
 router.use('/things', thingControlRouter);
 router.use('/mqtt', webhookRouter);
