@@ -2,6 +2,7 @@ const _ = require('lodash');
 const EmqxHelper = require('../libs/emqxHelper');
 
 const DeviceStatusService = require('../services/deviceStatusService');
+const DeviceReportService = require('../services/deviceReportService');
 
 const ReportRawDevice = require('../models/reportRawDeviceModel');
 
@@ -11,7 +12,8 @@ module.exports = {
             try {
                 const dataInsert = payload;
                 delete dataInsert['maLenh'];
-                await DeviceStatusService.processDeviceStatus(dataInsert);
+                // await DeviceStatusService.processDeviceStatus(dataInsert);
+                await DeviceReportService.processDeviceReport(dataInsert);
                 await ReportRawDevice.create(dataInsert);
                 resolve(true);
             } catch(error) {

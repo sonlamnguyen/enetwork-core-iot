@@ -45,6 +45,14 @@ const deviceSchema = new mongoose.Schema({
     inputs: [subDevice],
     outputs: [subDevice],
     analogs: [subDevice],
+    longtitude: {
+        type: String,
+        required: false
+    },
+    latitured: {
+        type: String,
+        required: false
+    },
     status: {
         type: Boolean,
         default: true

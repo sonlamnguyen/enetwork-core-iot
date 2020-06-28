@@ -1,5 +1,6 @@
 'use strict';
 const _ = require('lodash');
+const moment = require('moment');
 const Promise = require('promise');
 const Response = require('./response');
 
@@ -102,3 +103,10 @@ module.exports.checkPermissionDetail = (req, res, next) => {
       return Response.error(res, 403, 'Unauthorized access');
     }
 }
+
+module.exports.getDiffTimeSeconds = (oldTime, newTime) => {
+    const _old = moment(oldTime);
+    const _new = moment(newTime);
+    return  _new.diff(_old, 'seconds') + 1;
+}
+
