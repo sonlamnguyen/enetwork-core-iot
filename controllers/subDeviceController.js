@@ -75,15 +75,14 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const dataDelete = req.params;
             const query = {
-                deviceId: dataDelete.deviceId
+                deviceId: req.params.deviceId
             };
             const deviceData = await Device.findOne(query);
             if (!deviceData) {
                 return Response.error(res, 404, 'Device NOT found!');
             }
-            const newDeviceData = await DeviceService.processRemoveSubDevice(deviceData, dataDelete);
+            const newDeviceData = await DeviceService.processUpdateSubDevice(deviceData, req.body);
             const migrateData =  _.merge(deviceData, newDeviceData);
             const dataSave = await migrateData.save();
             if (!dataSave) {

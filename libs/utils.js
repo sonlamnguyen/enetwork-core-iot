@@ -110,7 +110,7 @@ module.exports.updateSubDevice = (type, deviceData, subDeviceData) => {
             const reponses = [];
             let temps = (deviceData && deviceData[type]) ?  deviceData[type] : [];
             temps.forEach(element => {
-                if(element.channelId === parseInt(channelId)) {
+                if(element.channelId === parseInt(subDeviceData['channelId'])) {
                     delete subDeviceData['deviceId'];
                     element = subDeviceData;
                 }
