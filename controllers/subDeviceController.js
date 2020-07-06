@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const ObjectId = require('mongodb').ObjectId; 
 
 const Response = require('../libs/response');
@@ -74,18 +75,21 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const query  = {
-                deviceId : req.params.id
+            const dataDelete = req.params;
+            const query = {
+                deviceId: dataDelete.deviceId
             };
-            const dataUpdate = req.body;
-            delete dataUpdate['inputs'];
-            delete dataUpdate['outputs'];
-            delete dataUpdate['analogs'];
-            const {status, data, error} = await BaseController.updateOne(Device, query, dataUpdate);
-            if (!status) {
+            const deviceData = await Device.findOne(query);
+            if (!deviceData) {
+                return Response.error(res, 404, 'Device NOT found!');
+            }
+            const newDeviceData = await DeviceService.processRemoveSubDevice(deviceData, dataDelete);
+            const migrateData =  _.merge(deviceData, newDeviceData);
+            const dataSave = await migrateData.save();
+            if (!dataSave) {
                 return Response.error(res, 500, error);
             } else {
-                return Response.success(res, data);
+                return Response.success(res, dataSave);
             }
         } catch(error) {
             return Response.error(res, 500, error);
@@ -94,11 +98,21 @@ module.exports = {
 
     async delete(req, res) {
         try {
-            const {status, data, error} = await BaseController.delete(Device, req.params.id);
-            if (!status) {
+            const dataDelete = req.params;
+            const query = {
+                deviceId: dataDelete.deviceId
+            };
+            const deviceData = await Device.findOne(query);
+            if (!deviceData) {
+                return Response.error(res, 404, 'Device NOT found!');
+            }
+            const newDeviceData = await DeviceService.processRemoveSubDevice(deviceData, dataDelete);
+            const migrateData =  _.merge(deviceData, newDeviceData);
+            const dataSave = await migrateData.save();
+            if (!dataSave) {
                 return Response.error(res, 500, error);
             } else {
-                return Response.success(res, 'Delete success');
+                return Response.success(res, dataSave);
             }
         } catch(error) {
             return Response.error(res, 500, error);

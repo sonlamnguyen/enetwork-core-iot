@@ -47,7 +47,31 @@ module.exports = {
     processAddSubDevice(deviceData, subDeviceData) {
         return new Promise(async function(resolve, reject) {
             try {
-                const newDeviceData = await Utils.addSubDevice(subDeviceData['type'], deviceData, subDeviceData);
+                const newDeviceData = await Utils.addSubDevice(subDeviceData['type'] + 's', deviceData, subDeviceData);
+                resolve(newDeviceData);
+            } catch(error) {
+                console.log(error);
+                resolve(false);
+            }
+        });
+    },
+
+    processRemoveSubDevice(deviceData, subDeviceData) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const newDeviceData = await Utils.removeSubDevice(subDeviceData['type'] + 's', deviceData, subDeviceData['channelId']);
+                resolve(newDeviceData);
+            } catch(error) {
+                console.log(error);
+                resolve(false);
+            }
+        });
+    },
+
+    processUpdateSubDevice(deviceData, subDeviceData) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const newDeviceData = await Utils.updateSubDevice(subDeviceData['type'] + 's', deviceData, subDeviceData);
                 resolve(newDeviceData);
             } catch(error) {
                 console.log(error);

@@ -6,6 +6,7 @@ const userRouter = require('./userRouter');
 const roleRouter = require('./roleRouter');
 const permissionRouter = require('./permissionRouter');
 const devicesRouter = require('./deviceRouter');
+const subDeviceRouter = require('./subDeviceRouter');
 const deviceUserRouter = require('./deviceUserRouter');
 const reportRouter = require('./reportRouter');
 
@@ -15,7 +16,7 @@ const webhookRouter = require('./webhookRouter');
 router.use('/authen', authenRouter);
 router.use('/users', userRouter);
 router.use('/devices', devicesRouter);
-router.use('/sub-devices', devicesRouter);
+router.use('/sub-devices', subDeviceRouter);
 router.use('/device-users', deviceUserRouter);
 router.use('/roles', roleRouter);
 router.use('/permissions', permissionRouter);

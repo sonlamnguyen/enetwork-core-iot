@@ -91,6 +91,7 @@ module.exports = {
 
     async delete(req, res) {
         try {
+            console.log(req.params);
             const {status, data, error} = await BaseController.delete(Device, req.params.id);
             if (!status) {
                 return Response.error(res, 500, error);

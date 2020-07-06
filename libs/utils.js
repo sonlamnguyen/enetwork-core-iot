@@ -68,11 +68,14 @@ module.exports.genSubDevices = (type, numberSubDevice) => {
 module.exports.addSubDevice = (type, deviceData, subDeviceData) => {
     return new Promise(async function(resolve, reject) {
         try {
-            const temps = deviceData[type];
-            const maxChannelId = Math.max.apply(Math, temps.map(function(o) { return o.channelId; }))
+            const temps = (deviceData && deviceData[type]) ?  deviceData[type] : [];
+            let maxChannelId = 0;
+            if(temps && temps.length > 0) {
+                maxChannelId = Math.max.apply(Math, temps.map(function(o) { return o.channelId; }));
+            }
             subDeviceData['channelId'] = maxChannelId + 1;
             delete subDeviceData['deviceId'];
-            inputs.push(subDeviceData);
+            temps.push(subDeviceData);
             deviceData[type] = temps;
             resolve(deviceData);
         } catch(error) {
@@ -81,6 +84,47 @@ module.exports.addSubDevice = (type, deviceData, subDeviceData) => {
         }
     });
 }
+
+module.exports.removeSubDevice = (type, deviceData, channelId) => {
+    return new Promise(async function(resolve, reject) {
+        try {
+            const reponses = [];
+            let temps = (deviceData && deviceData[type]) ?  deviceData[type] : [];
+            temps.forEach(element => {
+                if(element.channelId != parseInt(channelId)) {
+                    reponses.push(element);
+                }
+            });
+            deviceData[type] = reponses;
+            resolve(deviceData);
+        } catch(error) {
+            console.log(error);
+            resolve(deviceData);
+        }
+    });
+}
+
+module.exports.updateSubDevice = (type, deviceData, subDeviceData) => {
+    return new Promise(async function(resolve, reject) {
+        try {
+            const reponses = [];
+            let temps = (deviceData && deviceData[type]) ?  deviceData[type] : [];
+            temps.forEach(element => {
+                if(element.channelId === parseInt(channelId)) {
+                    delete subDeviceData['deviceId'];
+                    element = subDeviceData;
+                }
+                reponses.push(element);
+            });
+            deviceData[type] = reponses;
+            resolve(deviceData);
+        } catch(error) {
+            console.log(error);
+            resolve(deviceData);
+        }
+    });
+}
+
 
 
 
