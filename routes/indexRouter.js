@@ -15,6 +15,7 @@ const webhookRouter = require('./webhookRouter');
 router.use('/authen', authenRouter);
 router.use('/users', userRouter);
 router.use('/devices', devicesRouter);
+router.use('/sub-devices', devicesRouter);
 router.use('/device-users', deviceUserRouter);
 router.use('/roles', roleRouter);
 router.use('/permissions', permissionRouter);

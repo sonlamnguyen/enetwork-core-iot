@@ -65,6 +65,24 @@ module.exports.genSubDevices = (type, numberSubDevice) => {
     });
 }
 
+module.exports.addSubDevice = (type, deviceData, subDeviceData) => {
+    return new Promise(async function(resolve, reject) {
+        try {
+            const temps = deviceData[type];
+            const maxChannelId = Math.max.apply(Math, temps.map(function(o) { return o.channelId; }))
+            subDeviceData['channelId'] = maxChannelId + 1;
+            delete subDeviceData['deviceId'];
+            inputs.push(subDeviceData);
+            deviceData[type] = temps;
+            resolve(deviceData);
+        } catch(error) {
+            console.log(error);
+            resolve(deviceData);
+        }
+    });
+}
+
+
 
 module.exports.convertDecToBinArray = (number, numberBits = 16) => {
     let binary = "";

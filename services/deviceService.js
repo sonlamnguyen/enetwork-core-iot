@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+const Utils = require('../libs/utils');
 const ThingService = require('./thingService');
 
 module.exports = {
@@ -36,6 +37,18 @@ module.exports = {
                     data['status'] = false;
                 }
                 resolve(data);
+            } catch(error) {
+                console.log(error);
+                resolve(false);
+            }
+        });
+    },
+
+    processAddSubDevice(deviceData, subDeviceData) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const newDeviceData = await Utils.addSubDevice(subDeviceData['type'], deviceData, subDeviceData);
+                resolve(newDeviceData);
             } catch(error) {
                 console.log(error);
                 resolve(false);

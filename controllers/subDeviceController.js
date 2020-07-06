@@ -53,15 +53,18 @@ module.exports = {
             const query = {
                 deviceId: req.body.deviceId
             };
+            const deviceData = await Device.findOne(query);
+            if (!deviceData) {
+                return Response.error(res, 404, 'Device NOT found!');
+            }
             const dataInsert = req.body;
-            dataInsert['inputs'] = await Utils.genSubDevices('input', dataInsert['inputs']);
-            dataInsert['outputs']= await Utils.genSubDevices('output', dataInsert['outputs']);
-            dataInsert['analogs'] = await Utils.genSubDevices('analog', dataInsert['analogs']);
-            const {status, data, error} = await BaseController.addNotExist(Device, query, dataInsert);
-            if (!status) {
+            const newDeviceData = await DeviceService.processAddSubDevice(deviceData, dataInsert);
+            const migrateData =  _.merge(deviceData, newDeviceData);
+            const dataSave = await migrateData.save();
+            if (!dataSave) {
                 return Response.error(res, 500, error);
             } else {
-                return Response.success(res, data);
+                return Response.success(res, dataSave);
             }
         } catch(error) {
             console.log(error);

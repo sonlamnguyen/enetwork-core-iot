@@ -9,6 +9,10 @@ const reportRawDeviceSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    power: {
+        type: String,
+        required: false,
+    },
     input1: {
         type: String,
         required: false,
