@@ -3,6 +3,8 @@ const _ = require('lodash');
 const Utils = require('../libs/utils');
 const ThingService = require('./thingService');
 
+const Device = require('../models/deviceModel');
+
 module.exports = {
     processStatusDevices(data) {
         return new Promise(async function(resolve, reject) {
@@ -37,6 +39,31 @@ module.exports = {
                     data['status'] = false;
                 }
                 resolve(data);
+            } catch(error) {
+                console.log(error);
+                resolve(false);
+            }
+        });
+    },
+
+    processConfigDevice(data) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const deviceData = await Device.findOne({ deviceId: data.deviceId});
+                if (!deviceData) { 
+                    resolve(false);
+                }
+                
+                console.log(data);
+                deviceData.mdSim = data['mdSim'] ? data['mdSim'] : deviceData.mdSim;
+                deviceData.firmVer = data['firmVer'] ? data['firmVer'] : deviceData.firmVer;
+                deviceData.config = data['config'] ? data['config'] : deviceData.config;
+                for (let i = 1; i <= 4; i++) {
+                    deviceData.sdt.push(data['sdt' + i.toString()]);
+                }   
+                deviceData.sdt = [...new Set(deviceData.sdt)]; 
+                await deviceData.save();
+                resolve(true);
             } catch(error) {
                 console.log(error);
                 resolve(false);

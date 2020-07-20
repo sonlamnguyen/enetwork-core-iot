@@ -38,6 +38,25 @@ const deviceSchema = new mongoose.Schema({
         required: false,
         default: ''
     },
+    mdSim: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    firmVer: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    config: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    sdt: {
+        type: [String],
+        required: false
+    },
     type: {
         type: Number,
         required: true,

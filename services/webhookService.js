@@ -4,6 +4,7 @@ const RequestPromise = require('../libs/requestPromise');
 
 const DeviceStatusService = require('../services/deviceStatusService');
 const DeviceReportService = require('../services/deviceReportService');
+const DeviceService = require('../services/deviceService');
 
 const ReportRawDevice = require('../models/reportRawDeviceModel');
 
@@ -63,13 +64,10 @@ module.exports = {
     cauHinh(payload) {
         return new Promise(async function(resolve, reject) {
             try {
-                const request = await EmqxHelper.getCheckConnectionRequest(deviceId);
-                const connection = await EmqxHelper.requestPromise(request);
-                if (connection && (!_.isEmpty(connection.data))) {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
+                const dataConfig = payload;
+                delete dataConfig['maLenh'];
+                await DeviceService.processConfigDevice(dataConfig);
+                resolve(true);
             } catch(error) {
                 console.log(error);
                 resolve(false);
