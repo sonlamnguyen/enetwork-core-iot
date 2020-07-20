@@ -58,10 +58,11 @@ module.exports = {
                 deviceData.mdSim = data['mdSim'] ? data['mdSim'] : deviceData.mdSim;
                 deviceData.firmVer = data['firmVer'] ? data['firmVer'] : deviceData.firmVer;
                 deviceData.config = data['config'] ? data['config'] : deviceData.config;
+                deviceData.sdt = [];
                 for (let i = 1; i <= 4; i++) {
                     deviceData.sdt.push(data['sdt' + i.toString()]);
                 }   
-                deviceData.sdt = [...new Set(deviceData.sdt)]; 
+                // deviceData.sdt = [...new Set(deviceData.sdt)]; 
                 await deviceData.save();
                 resolve(true);
             } catch(error) {
