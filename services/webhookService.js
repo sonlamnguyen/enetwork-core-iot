@@ -7,6 +7,7 @@ const DeviceReportService = require('../services/deviceReportService');
 const DeviceService = require('../services/deviceService');
 
 const ReportRawDevice = require('../models/reportRawDeviceModel');
+const LogConfigDevice = require('../models/logConfigDeviceModel');
 
 module.exports = {
     dinhKy(payload) {
@@ -65,6 +66,7 @@ module.exports = {
         return new Promise(async function(resolve, reject) {
             try {
                 const dataConfig = payload;
+                await LogConfigDevice.create(dataConfig);
                 delete dataConfig['maLenh'];
                 await DeviceService.processConfigDevice(dataConfig);
                 resolve(true);
