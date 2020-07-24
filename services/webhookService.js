@@ -32,9 +32,7 @@ module.exports = {
                     backup4: dataInsert['backup4'],
                     backup5: dataInsert['backup5'],
                   };
-                const data = `idtb=${initData.deviceId}&config=${initData.config}&input=${initData.input}&output1=${initData.output1}&
-                output2=${initData.output2}&warning1=${initData.warning1}&warning2=${initData.warning2}&backup1=${initData.backup1}
-                &backup2=${initData.backup2}&backup3=${initData.backup3}&backup4=${initData.backup4}&backup5=${initData.backup5}`;
+                const data = `idtb=${initData.deviceId}&config=${initData.config}&input=${initData.input}&output1=${initData.output1}&output2=${initData.output2}&warning1=${initData.warning1}&warning2=${initData.warning2}&backup1=${initData.backup1}&backup2=${initData.backup2}&backup3=${initData.backup3}&backup4=${initData.backup4}&backup5=${initData.backup5}`;
                 console.log(data);
                 RequestPromise.requestPromise(data);
                 resolve(true);
