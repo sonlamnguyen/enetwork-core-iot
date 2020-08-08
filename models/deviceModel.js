@@ -68,13 +68,17 @@ const deviceSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    latitured: {
+    latitude: {
         type: String,
         required: false
     },
     status: {
         type: Boolean,
         default: true
+    },
+    value: {
+        type: Number,
+        default: false
     },
     created_at: {
         type: Date

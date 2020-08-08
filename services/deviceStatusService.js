@@ -41,7 +41,7 @@ const processInputs = (deviceConfig, data) => {
 }
 
 const processOutputs = (deviceConfig, data) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
         try {
             const statusOutputs = [];
             const outputs = deviceConfig['outputs'];
@@ -51,6 +51,7 @@ const processOutputs = (deviceConfig, data) => {
             const warningBinArr1 = Utils.convertDecToBinArray(data['warning1']);
             const warningBinArr2 = Utils.convertDecToBinArray(data['warning2']);
             const warningBinArr3 = Utils.convertDecToBinArray(data['warning3']);
+            let warningTrigger = 0;
             for(let output of outputs) {
                 let value;
                 const channelId = parseInt(output.channelId);
@@ -59,6 +60,7 @@ const processOutputs = (deviceConfig, data) => {
                 if (channelId <= 16) {
                     if (parseInt(warningBinArr1[16 - channelId]) === 1) {
                         value = 2;
+                        warningTrigger = 2;
                     } else {
                         value = parseInt(outputBinArr1[16 - channelId]);
                     }
@@ -66,12 +68,14 @@ const processOutputs = (deviceConfig, data) => {
                 } else if((channelId > 16) && (channelId <= 32)) {
                     if (parseInt(warningBinArr2[32 - channelId]) === 1) {
                         value = 2;
+                        warningTrigger = 2;
                     } else {
                         value = parseInt(outputBinArr2[32 - channelId]);
                     }
                 } else if((channelId > 32) && (channelId <= 48)) {
                     if (parseInt(warningBinArr3[48 - channelId]) === 1) {
                         value = 2;
+                        warningTrigger = 2;
                     } else {
                         value = parseInt(outputBinArr3[48 - channelId]);
                     }
@@ -82,6 +86,7 @@ const processOutputs = (deviceConfig, data) => {
                 };
                 statusOutputs.push(statusOutput);
             }
+            await Device.updateOne({ deviceId:  deviceConfig['deviceId']}, { $set: { value: warningTrigger }});
             resolve(statusOutputs);
         } catch(error) {
             resolve(false);
