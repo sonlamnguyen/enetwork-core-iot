@@ -53,6 +53,10 @@ const deviceSchema = new mongoose.Schema({
         required: false,
         default: ''
     },
+    signal: {
+        type: Number,
+        required: false,
+    },
     config: {
         type: String,
         required: false,

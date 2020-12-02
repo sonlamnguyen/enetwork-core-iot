@@ -154,6 +154,10 @@ module.exports.processDeviceStatus = (data) => {
                 const migrateData = _.merge(oldDeviceStatus, deviceStatusData);
                 deviceStatusInsert = await migrateData.save();
             }
+
+            deviceConfig.signal = parseInt(data['signal']);
+            await deviceConfig.save();
+
             // await emitStatusSocketByDeviceId(deviceStatusData.deviceId, deviceStatusData);
             resolve(true);
         } catch (error) {

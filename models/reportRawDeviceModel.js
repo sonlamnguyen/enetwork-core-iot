@@ -13,6 +13,10 @@ const reportRawDeviceSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    signal: {
+        type: Number,
+        required: false,
+    },
     input1: {
         type: String,
         required: false,
