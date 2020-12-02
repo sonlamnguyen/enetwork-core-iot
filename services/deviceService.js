@@ -57,6 +57,7 @@ module.exports = {
                 console.log(data);
                 deviceData.mdSim = data['mdSim'] ? data['mdSim'] : deviceData.mdSim;
                 deviceData.firmVer = data['firmVer'] ? data['firmVer'] : deviceData.firmVer;
+                deviceData.imeiSim = data['imeiSim'] ? data['imeiSim'] : deviceData.imeiSim;
                 deviceData.config = data['config'] ? data['config'] : deviceData.config;
                 deviceData.sdt = [];
                 for (let i = 1; i <= 4; i++) {

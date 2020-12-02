@@ -21,6 +21,11 @@ const logConfigDeviceSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    imeiSim: {
+        type: String,
+        required: false,
+        default: ''
+    },
     sdt1: {
         type: String,
         required: false

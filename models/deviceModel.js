@@ -48,6 +48,11 @@ const deviceSchema = new mongoose.Schema({
         required: false,
         default: ''
     },
+    imeiSim: {
+        type: String,
+        required: false,
+        default: ''
+    },
     config: {
         type: String,
         required: false,
