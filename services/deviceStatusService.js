@@ -3,6 +3,8 @@ var Promise = require('promise');
 const Utils = require('../libs/utils');
 const { emitStatusSocketByDeviceId } = require('../libs/redisSocket');
 
+const ThingService = require('./thingService');
+
 const Device = require('../models/deviceModel');
 const DeviceStatus = require('../models/deviceStatusModel');
 const DeviceUser = require('../models/deviceUserModel');
@@ -121,6 +123,46 @@ const processAnalogs = (deviceConfig, data) => {
     });
 }
 
+const pushSmsWarning = async (deviceData, statusOutputs) => {
+    try {
+        // {
+        //     "Phone_number":["số điện thoại 1","số điện thoại 2","số điện thoại 3","số điện thoại 4"],
+        //     "Content":" ID : ms0020,Số lượng lỗi : 3 : Báo hết bồn NAOH, Báo hết bồn H2O2,Báo Hết Polymer"
+        // }
+        let content = 'ID : ' + deviceData.deviceId + ',';
+
+        const dataOutput = _.merge(deviceData.outputs, statusOutputs);
+        let numberError = 0;
+        let contentError = '';
+        for (let output of dataOutput) {
+            if (output && output.value == 2) {
+                numberError++;
+                contentError += output.name + ',';
+            }
+        }
+        content += 'Số lượng lỗi: ' + numberError + ' - ' + contentError;
+        if ((deviceData.value == 0) && (numberError == 0)) {
+            return true;
+        } else if ((deviceData.value == 2) && (numberError == 0)) {
+            content = 'ID : ' + deviceData.deviceId + ' - Đã hết lỗi';
+        }
+        const payload = {
+            phone_number: deviceData.sdt ? deviceData.sdt : [],
+            content: content
+        };
+        console.log('payload send sms=> ', payload);
+        const { status, data, error } = await ThingService.sendSms(deviceData.deviceId, payload);
+        if (status) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
 module.exports.processDeviceStatus = (data) => {
     return new Promise(async function (resolve, reject) {
         try {
@@ -148,14 +190,21 @@ module.exports.processDeviceStatus = (data) => {
 
             let deviceStatusInsert;
             let oldDeviceStatus = await DeviceStatus.findOne({ deviceId: deviceConfig.deviceId });
+            const objectsEqual = (o1, o2) => JSON.stringify(o1) === JSON.stringify(o2);
             if (!oldDeviceStatus) {
                 deviceStatusInsert = await DeviceStatus.create(deviceStatusData);
             } else {
+                const isEqual = objectsEqual(oldDeviceStatus.outputs, statusOutputs);
+                if(!isEqual) {
+                    await pushSmsWarning(deviceConfig, statusOutputs);
+                }
                 const migrateData = _.merge(oldDeviceStatus, deviceStatusData);
                 deviceStatusInsert = await migrateData.save();
             }
 
             deviceConfig.signal = parseInt(data['signal']);
+
+            
             await deviceConfig.save();
 
             // await emitStatusSocketByDeviceId(deviceStatusData.deviceId, deviceStatusData);

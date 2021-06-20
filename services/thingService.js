@@ -45,6 +45,26 @@ module.exports = {
         });
     },
 
+    sendSms(deviceId, payload) {
+        return new Promise(async function(resolve, reject) {
+            try {
+                const topic = 'SMSPUBLISHER';
+                const request = await EmqxHelper.getControlRequest(deviceId, topic, payload);
+                const control = await EmqxHelper.requestPromise(request);
+                resolve({
+                    status: true,
+                    data: control
+                });
+            } catch(error) {
+                console.log(error);
+                resolve({
+                    status: false,
+                    error: error.message
+                });
+            }
+        });
+    },
+
     connection(deviceId) {
         return new Promise(async function(resolve, reject) {
             try {
