@@ -125,6 +125,10 @@ const processAnalogs = (deviceConfig, data) => {
 
 const pushSmsWarning = async (deviceData, statusOutputs) => {
     try {
+        if(!deviceData.isSendSms) {
+            console.log('Disable send sms');
+            return true;
+        }
         // {
         //     "Phone_number":["số điện thoại 1","số điện thoại 2","số điện thoại 3","số điện thoại 4"],
         //     "Content":" ID : ms0020,Số lượng lỗi : 3 : Báo hết bồn NAOH, Báo hết bồn H2O2,Báo Hết Polymer"

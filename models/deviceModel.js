@@ -89,6 +89,10 @@ const deviceSchema = new mongoose.Schema({
         type: Number,
         default: false
     },
+    isSendSms: {
+        type: Boolean,
+        default: true
+    },
     created_at: {
         type: Date
     },
